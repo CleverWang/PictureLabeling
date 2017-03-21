@@ -31,7 +31,6 @@
         app:itemTextColor="#ffffff"
         app:itemBackground="@color/colorPrimary"
         android:background="?android:attr/windowBackground"
-
         app:menu="@menu/navigation" />
 
 </LinearLayout>

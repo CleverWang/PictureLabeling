@@ -13,13 +13,9 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
-/**
- * Created by Wang Cong on 2016/9/28.
- */
-
 public class login extends AppCompatActivity {
-    EditText text1, text2;
-    String a, b;
+    EditText text1_username, text2_pwd;
+    String user_name, pwd;
     static boolean isPasswordChanged = false;
     static boolean isLogout = false;
     CheckBox rem_pw, auto_login;
@@ -35,8 +31,9 @@ public class login extends AppCompatActivity {
         ActivityCollector.activities.add(this);
         exitAll = false;
 
-        text1 = (EditText) findViewById(R.id.login_account);
-        text2 = (EditText) findViewById(R.id.login_password);
+        text1_username = (EditText) findViewById(R.id.login_account);
+        text2_pwd = (EditText) findViewById(R.id.login_password);
+
         sp = this.getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         rem_pw = (CheckBox) findViewById(R.id.memory);
         auto_login = (CheckBox) findViewById(R.id.autologin);
@@ -44,8 +41,8 @@ public class login extends AppCompatActivity {
         if (sp.getBoolean("ISCHECK", false)) {
             //设置默认是记录密码状态
             rem_pw.setChecked(true);
-            text1.setText(sp.getString("USER_NAME", ""));
-            text2.setText(sp.getString("PASSWORD", ""));
+            text1_username.setText(sp.getString("USER_NAME", ""));
+            text2_pwd.setText(sp.getString("PASSWORD", ""));
             //判断自动登陆多选框状态
             if (sp.getBoolean("AUTO_ISCHECK", false)) {
                 //设置默认是自动登录状态
@@ -55,7 +52,7 @@ public class login extends AppCompatActivity {
                     //跳转界面
                     Intent intent = new Intent(login.this, main.class);
                     login.this.startActivity(intent);
-                } else ;
+                }
                 //Toast.makeText(login.this, "请重新输入密码！", Toast.LENGTH_SHORT).show();
             }
         }
@@ -66,36 +63,62 @@ public class login extends AppCompatActivity {
         if (name != null && password != null) {
             rem_pw.setChecked(false);
             auto_login.setChecked(false);
-            text1.setText(name);
-            text2.setText(password);
+            text1_username.setText(name);
+            text2_pwd.setText(password);
         }
 
         Button button = (Button) findViewById(R.id.login);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                a = text1.getText().toString().trim();
-                b = text2.getText().toString().trim();
-                login.user = a;
-                if (text1.getText().toString().trim().isEmpty() || text2.getText().toString().trim().isEmpty()) {
+                user_name = text1_username.getText().toString().trim();
+                pwd = text2_pwd.getText().toString().trim();
+                login.user = user_name;
+                if (user_name.isEmpty() || pwd.isEmpty()) {
                     Toast.makeText(login.this, "密码或账号不能为空！", Toast.LENGTH_SHORT).show();
                     return;
                 } else {
+                    //暂时代码
                     Toast.makeText(login.this, "登录成功！", Toast.LENGTH_SHORT).show();
                     if (rem_pw.isChecked()) {
-                        //记住用户名、密码、
+                        //记住用户名、密码
                         SharedPreferences.Editor editor = sp.edit();
-                        editor.putString("USER_NAME", a);
-                        editor.putString("PASSWORD", b);
+                        editor.putString("USER_NAME", user_name);
+                        editor.putString("PASSWORD", pwd);
                         editor.commit();
                     }
                     Intent intent = new Intent(login.this, main.class);
                     startActivity(intent);
+
+                    /*不能删除此处代码String address = "";
+                    String params = "uid=" + user_name + "&" + "pwd=" + pwd;
+                    HttpUtil.sendHttpRequest(address, params, new HttpCallbackListener() {
+                        @Override
+                        public void onFinish(String response) {
+                            Log.d("Get from server", "message: " + response);
+                            //此处处理从server返回的信息，如果登录成功，则执行下面代码，否则错误信息
+                            Toast.makeText(login.this, "登录成功！", Toast.LENGTH_SHORT).show();
+                            if (rem_pw.isChecked()) {
+                                //记住用户名、密码
+                                SharedPreferences.Editor editor = sp.edit();
+                                editor.putString("USER_NAME", user_name);
+                                editor.putString("PASSWORD", pwd);
+                                editor.commit();
+                            }
+                            Intent intent = new Intent(login.this, main.class);
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            Log.d("Get from server", "message: " + e.toString());
+                        }
+                    });*/
                 }
 
-                /*query = new BmobQuery<Person>();
-                query.addWhereEqualTo("name", a);
-                query.addWhereEqualTo("address", b);
+                /*参考代码query = new BmobQuery<Person>();
+                query.addWhereEqualTo("name", user_name);
+                query.addWhereEqualTo("address", pwd);
                 query.setLimit(1);
                 query.findObjects(new FindListener<Person>() {
                     @Override

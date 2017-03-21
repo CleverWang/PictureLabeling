@@ -14,10 +14,10 @@
         app:srcCompat="@drawable/ic_dashboard_white_48dp" />
 
     <LinearLayout
-        android:layout_width="280dp"
+        android:layout_width="260dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="80dp"
         android:background="@drawable/setbar_bg"
         android:weightSum="1">
 
@@ -40,7 +40,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="280dp"
+        android:layout_width="260dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="30dp"
@@ -91,7 +91,7 @@
 
     <Button
         android:id="@+id/login"
-        android:layout_width="250dp"
+        android:layout_width="260dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="30dp"
@@ -102,7 +102,7 @@
 
     <Button
         android:id="@+id/loginregister"
-        android:layout_width="250dp"
+        android:layout_width="260dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"

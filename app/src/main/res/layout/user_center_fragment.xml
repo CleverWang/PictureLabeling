@@ -7,11 +7,11 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_marginTop="60dp"
         android:layout_gravity="center_horizontal"
-        app:srcCompat="@drawable/ic_account_circle_black_48dp" />
+        android:background="@drawable/ic_account_circle_black_48dp" />
 
     <TextView
         android:id="@+id/textView"
@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="志愿者"
-        android:textSize="30dp" />
+        android:textSize="28dp" />
 
     <RatingBar
         android:id="@+id/ratingBar"
@@ -37,8 +37,8 @@
 
         <ImageView
             android:id="@+id/imageView2"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             app:srcCompat="@drawable/ic_monetization_on_orange_700_48dp" />
 
         <TextView
@@ -46,13 +46,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="积分：20分"
-            android:textSize="25dp" />
+            android:textSize="20dp" />
     </LinearLayout>
 
 
     <Button
-        android:id="@+id/loginregister"
-        android:layout_width="250dp"
+        android:id="@+id/change_user_info_button"
+        android:layout_width="220dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="30dp"

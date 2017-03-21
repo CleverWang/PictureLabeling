@@ -39,10 +39,10 @@ public class register extends AppCompatActivity {
                         public void done(List<Person> list, BmobException e) {
                             if (list != null && list.size() != 0) {
                                 Toast.makeText(register.this, "用户名已被注册！", Toast.LENGTH_SHORT).show();
-                                text1.setText("");
+                                text1_username.setText("");
                             } else {
-                                register.p2.setName(text1.getText().toString().trim());
-                                String passwd = text2.getText().toString().trim();
+                                register.p2.setName(text1_username.getText().toString().trim());
+                                String passwd = text2_pwd.getText().toString().trim();
                                 if (passwd.length() == 0) {
                                     Toast.makeText(register.this, "密码不能为空！", Toast.LENGTH_SHORT).show();
                                 } else {
@@ -53,8 +53,8 @@ public class register extends AppCompatActivity {
                                             public void done(String objectId, BmobException e) {
                                                 if (e == null) {
                                                     Toast.makeText(register.this, "注册成功！", Toast.LENGTH_SHORT).show();
-                                                    String name = new String(text1.getText().toString().trim());
-                                                    String password = new String(text2.getText().toString().trim());
+                                                    String name = new String(text1_username.getText().toString().trim());
+                                                    String password = new String(text2_pwd.getText().toString().trim());
                                                     Intent intent = new Intent(register.this, login.class);
                                                     intent.putExtra("username", name);
                                                     intent.putExtra("password", password);
