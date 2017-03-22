@@ -13,15 +13,13 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.wangcong.picturelabeling.Util.GlobalFlags;
+
 public class login extends AppCompatActivity {
     EditText text1_username, text2_pwd;
     String user_name, pwd;
-    static boolean isPasswordChanged = false;
-    static boolean isLogout = false;
     CheckBox rem_pw, auto_login;
     SharedPreferences sp;
-    static String user = "";
-    static boolean exitAll = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,34 +27,39 @@ public class login extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.login);
         ActivityCollector.activities.add(this);
-        exitAll = false;
 
-        text1_username = (EditText) findViewById(R.id.login_account);
-        text2_pwd = (EditText) findViewById(R.id.login_password);
+        text1_username = (EditText) findViewById(R.id.edit_login_account);
+        text2_pwd = (EditText) findViewById(R.id.edit_login_password);
 
         sp = this.getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         rem_pw = (CheckBox) findViewById(R.id.memory);
         auto_login = (CheckBox) findViewById(R.id.autologin);
-
+        //判断自动登录多选框状态
         if (sp.getBoolean("ISCHECK", false)) {
-            //设置默认是记录密码状态
+            //设置记录密码状态
             rem_pw.setChecked(true);
             text1_username.setText(sp.getString("USER_NAME", ""));
             text2_pwd.setText(sp.getString("PASSWORD", ""));
             //判断自动登陆多选框状态
             if (sp.getBoolean("AUTO_ISCHECK", false)) {
-                //设置默认是自动登录状态
-                if (isPasswordChanged == false) {
+                //设置自动登录状态
+                if (GlobalFlags.isPasswordChanged() == false && GlobalFlags.isLogout() == false) {
+                    //此处联网判断用户名和密码
+                    //！！！！！！！！！！！
                     auto_login.setChecked(true);
-                    login.user = sp.getString("USER_NAME", "");
+                    GlobalFlags.setUserID(sp.getString("USER_NAME", ""));
+                    GlobalFlags.setExitAll(true);
                     //跳转界面
                     Intent intent = new Intent(login.this, main.class);
-                    login.this.startActivity(intent);
+                    startActivity(intent);
+                } else {
+                    auto_login.setChecked(false);
                 }
                 //Toast.makeText(login.this, "请重新输入密码！", Toast.LENGTH_SHORT).show();
             }
         }
 
+        //从注册界面转跳而来，取出用户名和密码自动填充
         Intent intent = getIntent();
         String name = intent.getStringExtra("username");
         String password = intent.getStringExtra("password");
@@ -67,13 +70,13 @@ public class login extends AppCompatActivity {
             text2_pwd.setText(password);
         }
 
-        Button button = (Button) findViewById(R.id.login);
+        Button button = (Button) findViewById(R.id.button_login);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 user_name = text1_username.getText().toString().trim();
                 pwd = text2_pwd.getText().toString().trim();
-                login.user = user_name;
+                GlobalFlags.setUserID(user_name);
                 if (user_name.isEmpty() || pwd.isEmpty()) {
                     Toast.makeText(login.this, "密码或账号不能为空！", Toast.LENGTH_SHORT).show();
                     return;
@@ -141,8 +144,8 @@ public class login extends AppCompatActivity {
                 });*/
             }
         });
-
-        Button button1 = (Button) findViewById(R.id.loginregister);
+        //转跳注册界面
+        Button button1 = (Button) findViewById(R.id.button_register);
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -169,23 +172,28 @@ public class login extends AppCompatActivity {
                     sp.edit().putBoolean("AUTO_ISCHECK", true).commit();
                 } else {
                     sp.edit().putBoolean("AUTO_ISCHECK", false).commit();
+                    GlobalFlags.setExitAll(false);
                 }
             }
         });
 
     }
 
+    //从退出登录和修改密码界面而来，则按返回直接退出
     @Override
     public void onBackPressed() {
-        if (login.isPasswordChanged == true || login.isLogout == true) {
+        if (GlobalFlags.isPasswordChanged() || GlobalFlags.isLogout()) {
+            GlobalFlags.setIsPasswordChanged(false);
+            GlobalFlags.setIsLogout(false);
             ActivityCollector.finishAll();
         } else
             super.onBackPressed();
     }
 
+    //自动登录后，在主界面按返回直接退出
     public void onResume() {
         super.onResume();
-        if (exitAll)
-            finish();
+        if (GlobalFlags.isExitAll())
+            this.finish();
     }
 }

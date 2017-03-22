@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="80dp"
-        android:background="@drawable/setbar_bg"
+        android:background="@drawable/rounded_rect"
         android:weightSum="1">
 
         <TextView
@@ -31,7 +31,7 @@
 
 
         <EditText
-            android:id="@+id/login_account"
+            android:id="@+id/edit_login_account"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.80"
@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="30dp"
-        android:background="@drawable/setbar_bg"
+        android:background="@drawable/rounded_rect"
         android:orientation="horizontal"
         android:weightSum="1">
 
@@ -57,7 +57,7 @@
             android:textSize="18dp" />
 
         <EditText
-            android:id="@+id/login_password"
+            android:id="@+id/edit_login_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.80"
@@ -90,23 +90,23 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/login"
+        android:id="@+id/button_login"
         android:layout_width="260dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="30dp"
-        android:background="@drawable/loginbutton"
+        android:background="@drawable/cyanrectangle"
         android:text="登录"
         android:textColor="#ffffff"
         android:textSize="18dp" />
 
     <Button
-        android:id="@+id/loginregister"
+        android:id="@+id/button_register"
         android:layout_width="260dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
-        android:background="@drawable/register"
+        android:background="@drawable/bluerectangle"
         android:text="注册"
         android:textColor="#ffffff"
         android:textSize="18dp" />
