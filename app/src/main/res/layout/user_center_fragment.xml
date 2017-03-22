@@ -9,7 +9,7 @@
         android:id="@+id/imageView"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="80dp"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/ic_account_circle_black_48dp" />
 
@@ -19,7 +19,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="志愿者"
-        android:textSize="28dp" />
+        android:textSize="25sp"
+        />
 
     <RatingBar
         android:id="@+id/ratingBar"

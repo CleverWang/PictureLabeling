@@ -34,7 +34,8 @@
         <activity android:name=".UserInfoChange">
 
         </activity>
-        <activity android:name=".ChangePWD"
+        <activity
+            android:name=".ChangePWD"
             android:theme="@style/Theme.AppCompat.NoActionBar">
 
         </activity>
