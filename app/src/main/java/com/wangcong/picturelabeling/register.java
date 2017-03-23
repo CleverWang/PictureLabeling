@@ -82,13 +82,14 @@ public class register extends AppCompatActivity {
                    //此处编写注册逻辑
                     Toast.makeText(register.this, "注册成功！", Toast.LENGTH_SHORT).show();
 
-                    //注册成功，将用户名和密码传到登录界面用于填充
+                    //注册成功，将用户名和密码传到登录界面
                     String name = user_name;
                     String password = pwd;
-                    Intent intent = new Intent(register.this, login.class);
+                    Intent intent = new Intent();
                     intent.putExtra("username", name);
                     intent.putExtra("password", password);
-                    startActivity(intent);
+                    setResult(RESULT_OK, intent);
+                    finish();
                 }
             }
         });

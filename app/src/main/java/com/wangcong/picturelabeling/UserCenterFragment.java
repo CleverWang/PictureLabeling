@@ -40,8 +40,7 @@ public class UserCenterFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), login.class);
-                GlobalFlags.setIsLogout(true);
-                GlobalFlags.setExitAll(false);
+                GlobalFlags.setIsLoggedIn(false);
                 startActivity(intent);
             }
         });

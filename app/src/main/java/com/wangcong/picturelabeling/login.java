@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -28,6 +29,8 @@ public class login extends AppCompatActivity {
         setContentView(R.layout.login);
         ActivityCollector.activities.add(this);
 
+        Log.d("login", "onCreate: called");
+
         text1_username = (EditText) findViewById(R.id.edit_login_account);
         text2_pwd = (EditText) findViewById(R.id.edit_login_password);
 
@@ -36,38 +39,22 @@ public class login extends AppCompatActivity {
         auto_login = (CheckBox) findViewById(R.id.autologin);
         //判断自动登录多选框状态
         if (sp.getBoolean("ISCHECK", false)) {
-            //设置记录密码状态
             rem_pw.setChecked(true);
             text1_username.setText(sp.getString("USER_NAME", ""));
             text2_pwd.setText(sp.getString("PASSWORD", ""));
             //判断自动登陆多选框状态
             if (sp.getBoolean("AUTO_ISCHECK", false)) {
-                //设置自动登录状态
-                if (GlobalFlags.isPasswordChanged() == false && GlobalFlags.isLogout() == false) {
-                    //此处联网判断用户名和密码
-                    //！！！！！！！！！！！
-                    auto_login.setChecked(true);
-                    GlobalFlags.setUserID(sp.getString("USER_NAME", ""));
-                    GlobalFlags.setExitAll(true);
-                    //跳转界面
-                    Intent intent = new Intent(login.this, main.class);
-                    startActivity(intent);
-                } else {
-                    auto_login.setChecked(false);
-                }
+                auto_login.setChecked(true);
+
+                //此处联网判断用户名和密码
+                //！！！！！！！！！！！
+                GlobalFlags.setUserID(sp.getString("USER_NAME", ""));
+                GlobalFlags.setIsLoggedIn(true);
+                Intent intent = new Intent(login.this, main.class);
+                startActivity(intent);
+
                 //Toast.makeText(login.this, "请重新输入密码！", Toast.LENGTH_SHORT).show();
             }
-        }
-
-        //从注册界面转跳而来，取出用户名和密码自动填充
-        Intent intent = getIntent();
-        String name = intent.getStringExtra("username");
-        String password = intent.getStringExtra("password");
-        if (name != null && password != null) {
-            rem_pw.setChecked(false);
-            auto_login.setChecked(false);
-            text1_username.setText(name);
-            text2_pwd.setText(password);
         }
 
         Button button = (Button) findViewById(R.id.button_login);
@@ -81,7 +68,8 @@ public class login extends AppCompatActivity {
                     Toast.makeText(login.this, "密码或账号不能为空！", Toast.LENGTH_SHORT).show();
                     return;
                 } else {
-                    //暂时代码
+
+                    //*********暂时代码
                     Toast.makeText(login.this, "登录成功！", Toast.LENGTH_SHORT).show();
                     if (rem_pw.isChecked()) {
                         //记住用户名、密码
@@ -90,69 +78,48 @@ public class login extends AppCompatActivity {
                         editor.putString("PASSWORD", pwd);
                         editor.commit();
                     }
+                    GlobalFlags.setIsLoggedIn(true);
                     Intent intent = new Intent(login.this, main.class);
                     startActivity(intent);
+                    //**********
 
-                    /*不能删除此处代码String address = "";
-                    String params = "uid=" + user_name + "&" + "pwd=" + pwd;
-                    HttpUtil.sendHttpRequest(address, params, new HttpCallbackListener() {
-                        @Override
-                        public void onFinish(String response) {
-                            Log.d("Get from server", "message: " + response);
-                            //此处处理从server返回的信息，如果登录成功，则执行下面代码，否则错误信息
-                            Toast.makeText(login.this, "登录成功！", Toast.LENGTH_SHORT).show();
-                            if (rem_pw.isChecked()) {
-                                //记住用户名、密码
-                                SharedPreferences.Editor editor = sp.edit();
-                                editor.putString("USER_NAME", user_name);
-                                editor.putString("PASSWORD", pwd);
-                                editor.commit();
-                            }
-                            Intent intent = new Intent(login.this, main.class);
-                            startActivity(intent);
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-                            Log.d("Get from server", "message: " + e.toString());
-                        }
-                    });*/
-                }
-
-                /*参考代码query = new BmobQuery<Person>();
-                query.addWhereEqualTo("name", user_name);
-                query.addWhereEqualTo("address", pwd);
-                query.setLimit(1);
-                query.findObjects(new FindListener<Person>() {
-                    @Override
-                    public void done(List<Person> list, BmobException e) {
-                        if (list != null && list.size() != 0) {
-                            Toast.makeText(login.this, "登录成功！", Toast.LENGTH_SHORT).show();
-                            if (rem_pw.isChecked()) {
-                                //记住用户名、密码、
-                                SharedPreferences.Editor editor = sp.edit();
-                                editor.putString("USER_NAME", list.get(0).getName());
-                                editor.putString("PASSWORD", list.get(0).getAddress());
-                                editor.commit();
-                            }
-                            Intent intent = new Intent(login.this, main.class);
-                            startActivity(intent);
-                        } else {
-                            Toast.makeText(login.this, "登录失败，请重试！", Toast.LENGTH_SHORT).show();
-                        }
+                    //不能删除此处代码
+                    /***********String address = "http://192.168.1.104:8080/ssh_pic/login.jsp";
+                     String params = "pptelephone=" + user_name + "&" + "ppassword=" + pwd;
+                     HttpUtil.sendHttpRequest(address, params, new HttpCallbackListener() {
+                    @Override public void onFinish(String response) {
+                    Log.d("Get from server", "message: " + response);
+                    //此处处理从server返回的信息，如果登录成功，则执行下面代码，否则错误信息
+                    Toast.makeText(login.this, "登录成功！", Toast.LENGTH_SHORT).show();
+                    if (rem_pw.isChecked()) {
+                    //记住用户名、密码
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putString("USER_NAME", user_name);
+                    editor.putString("PASSWORD", pwd);
+                    editor.commit();
                     }
-                });*/
+                    Intent intent = new Intent(login.this, main.class);
+                    startActivity(intent);
+                    }
+
+                    @Override public void onError(Exception e) {
+                    Log.d("Get from server", "error message: " + e.toString());
+                    }
+                    });************/
+                }
             }
         });
+
         //转跳注册界面
         Button button1 = (Button) findViewById(R.id.button_register);
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(login.this, register.class);
-                startActivity(intent);
+                startActivityForResult(intent, 1);
             }
         });
+
 
         //监听记住密码多选框按钮事件
         rem_pw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -168,32 +135,70 @@ public class login extends AppCompatActivity {
         //监听自动登录多选框事件
         auto_login.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (auto_login.isChecked()) {
-                    sp.edit().putBoolean("AUTO_ISCHECK", true).commit();
-                } else {
-                    sp.edit().putBoolean("AUTO_ISCHECK", false).commit();
-                    GlobalFlags.setExitAll(false);
+                if (rem_pw.isChecked()) {
+                    if (auto_login.isChecked()) {
+                        sp.edit().putBoolean("AUTO_ISCHECK", true).commit();
+                    } else {
+                        sp.edit().putBoolean("AUTO_ISCHECK", false).commit();
+                    }
                 }
             }
         });
 
     }
 
-    //从退出登录和修改密码界面而来，则按返回直接退出
-    @Override
-    public void onBackPressed() {
-        if (GlobalFlags.isPasswordChanged() || GlobalFlags.isLogout()) {
-            GlobalFlags.setIsPasswordChanged(false);
-            GlobalFlags.setIsLogout(false);
-            ActivityCollector.finishAll();
-        } else
-            super.onBackPressed();
+    //从注册界面返回用户名和密码
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        switch (requestCode) {
+            case 1:
+                if (resultCode == RESULT_OK) {
+                    String name = intent.getStringExtra("username");
+                    String password = intent.getStringExtra("password");
+                    //Log.d("login", "onActivityResult: called" + name + " " + password);
+                    if (name != null && password != null && name.length() != 0 && password.length() != 0) {
+                        rem_pw.setChecked(false);
+                        auto_login.setChecked(false);
+                        text1_username.setText(name);
+                        text2_pwd.setText(password);
+                    }
+                }
+                break;
+            default:
+        }
     }
 
     //自动登录后，在主界面按返回直接退出
+    @Override
+    public void onRestart() {
+        super.onRestart();
+        Log.d("login", "onRestart: called");
+        if (GlobalFlags.isLoggedIn()) {
+            this.finish();
+        }
+    }
+
+    /*public void onStart() {
+        super.onStart();
+        Log.d("login", "onStart: called");
+    }
     public void onResume() {
         super.onResume();
-        if (GlobalFlags.isExitAll())
-            this.finish();
+        Log.d("login", "onResume: called");
     }
+    public void onPause() {
+        super.onPause();
+        Log.d("login", "onPause: called");
+    }
+    public void onStop() {
+        super.onStop();
+        Log.d("login", "onStop: called");
+    }
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("login", "onDestroy: called");
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }*/
 }
