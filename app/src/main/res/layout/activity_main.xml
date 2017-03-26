@@ -32,7 +32,7 @@
         >
 
         <fragment
-            android:name="com.wangcong.picturelabeling.AllPictureFragment"
+            android:name="com.wangcong.picturelabeling.background_frgment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

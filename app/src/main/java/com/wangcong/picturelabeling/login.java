@@ -29,7 +29,7 @@ public class login extends AppCompatActivity {
         setContentView(R.layout.login);
         ActivityCollector.activities.add(this);
 
-        Log.d("login", "onCreate: called");
+        //Log.d("login", "onCreate: called");
 
         text1_username = (EditText) findViewById(R.id.edit_login_account);
         text2_pwd = (EditText) findViewById(R.id.edit_login_password);
