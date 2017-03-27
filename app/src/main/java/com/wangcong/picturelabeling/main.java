@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class main extends AppCompatActivity {
     public int all_id = 1, sys_id = 2, his_id = 3, user_id = 4;
-    public int now_id = 1;
+    public int now_id = 0;
     public ArrayList<oneFrgment> allFragments = new ArrayList<>();
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -92,6 +92,11 @@ public class main extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ActivityCollector.activities.add(this);
+
+        AllPictureFragment fragment=new AllPictureFragment();
+        allFragments.add(new oneFrgment(fragment, all_id));
+        changeFragment(fragment);
+        now_id=all_id;
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
