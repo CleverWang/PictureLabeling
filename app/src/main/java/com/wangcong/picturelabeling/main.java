@@ -28,7 +28,7 @@ public class main extends AppCompatActivity {
                             fragment1 = new AllPictureFragment();
                             allFragments.add(new oneFrgment(fragment1, all_id));
                         }
-                        changeFragment(fragment1);
+                        changeFragment(fragment1, all_id);
                         now_id = all_id;
                     }
                     return true;
@@ -39,7 +39,7 @@ public class main extends AppCompatActivity {
                             fragment2 = new SystemPushFragment();
                             allFragments.add(new oneFrgment(fragment2, sys_id));
                         }
-                        changeFragment(fragment2);
+                        changeFragment(fragment2, sys_id);
                         now_id = sys_id;
                     }
                     return true;
@@ -50,7 +50,7 @@ public class main extends AppCompatActivity {
                             fragment3 = new LabelHistoryFragment();
                             allFragments.add(new oneFrgment(fragment3, his_id));
                         }
-                        changeFragment(fragment3);
+                        changeFragment(fragment3, his_id);
                         now_id = his_id;
                     }
                     return true;
@@ -61,7 +61,7 @@ public class main extends AppCompatActivity {
                             fragment4 = new UserCenterFragment();
                             allFragments.add(new oneFrgment(fragment4, user_id));
                         }
-                        changeFragment(fragment4);
+                        changeFragment(fragment4, user_id);
                         now_id = user_id;
                     }
                     return true;
@@ -71,10 +71,22 @@ public class main extends AppCompatActivity {
 
     };
 
-    public void changeFragment(Fragment fragment) {
+    public void changeFragment(Fragment fragment, int toId) {
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.content, fragment);
+        if (now_id < toId)
+            transaction.setCustomAnimations(R.animator.fragment_slide_left_enter, R.animator.fragment_slide_left_exit);
+        else
+            transaction.setCustomAnimations(R.animator.fragment_slide_right_enter, R.animator.fragment_slide_right_exit);
+        Fragment nowfragment = contain(now_id);
+        if (!fragment.isAdded()) {
+            transaction.hide(nowfragment).add(R.id.content, fragment);
+        } else {
+            transaction.hide(nowfragment).show(fragment);
+        }
+        //transaction.replace(R.id.content, fragment);
+        //transaction.addToBackStack(null);
+        //Log.d("main", "changeFragment: " + transaction.commit());
         transaction.commit();
     }
 
@@ -93,10 +105,10 @@ public class main extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ActivityCollector.activities.add(this);
 
-        AllPictureFragment fragment=new AllPictureFragment();
+        AllPictureFragment fragment = new AllPictureFragment();
         allFragments.add(new oneFrgment(fragment, all_id));
-        changeFragment(fragment);
-        now_id=all_id;
+        getFragmentManager().beginTransaction().replace(R.id.content, fragment).commit();
+        now_id = all_id;
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -171,7 +170,7 @@ public class login extends AppCompatActivity {
     @Override
     public void onRestart() {
         super.onRestart();
-        Log.d("login", "onRestart: called");
+        //Log.d("login", "onRestart: called");
         if (GlobalFlags.isLoggedIn()) {
             this.finish();
         }
