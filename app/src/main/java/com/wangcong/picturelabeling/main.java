@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class main extends AppCompatActivity {
     public int all_id = 1, sys_id = 2, his_id = 3, user_id = 4;
     public int now_id = 0;
-    public ArrayList<oneFrgment> allFragments = new ArrayList<>();
+    public ArrayList<oneFragment> allFragments = new ArrayList<>();
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -26,7 +26,7 @@ public class main extends AppCompatActivity {
                         AllPictureFragment fragment1 = (AllPictureFragment) contain(all_id);
                         if (fragment1 == null) {
                             fragment1 = new AllPictureFragment();
-                            allFragments.add(new oneFrgment(fragment1, all_id));
+                            allFragments.add(new oneFragment(fragment1, all_id));
                         }
                         changeFragment(fragment1, all_id);
                         now_id = all_id;
@@ -37,7 +37,7 @@ public class main extends AppCompatActivity {
                         SystemPushFragment fragment2 = (SystemPushFragment) contain(sys_id);
                         if (fragment2 == null) {
                             fragment2 = new SystemPushFragment();
-                            allFragments.add(new oneFrgment(fragment2, sys_id));
+                            allFragments.add(new oneFragment(fragment2, sys_id));
                         }
                         changeFragment(fragment2, sys_id);
                         now_id = sys_id;
@@ -48,7 +48,7 @@ public class main extends AppCompatActivity {
                         LabelHistoryFragment fragment3 = (LabelHistoryFragment) contain(his_id);
                         if (fragment3 == null) {
                             fragment3 = new LabelHistoryFragment();
-                            allFragments.add(new oneFrgment(fragment3, his_id));
+                            allFragments.add(new oneFragment(fragment3, his_id));
                         }
                         changeFragment(fragment3, his_id);
                         now_id = his_id;
@@ -59,7 +59,7 @@ public class main extends AppCompatActivity {
                         UserCenterFragment fragment4 = (UserCenterFragment) contain(user_id);
                         if (fragment4 == null) {
                             fragment4 = new UserCenterFragment();
-                            allFragments.add(new oneFrgment(fragment4, user_id));
+                            allFragments.add(new oneFragment(fragment4, user_id));
                         }
                         changeFragment(fragment4, user_id);
                         now_id = user_id;
@@ -78,11 +78,11 @@ public class main extends AppCompatActivity {
             transaction.setCustomAnimations(R.animator.fragment_slide_left_enter, R.animator.fragment_slide_left_exit);
         else
             transaction.setCustomAnimations(R.animator.fragment_slide_right_enter, R.animator.fragment_slide_right_exit);
-        Fragment nowfragment = contain(now_id);
+        Fragment nowFragment = contain(now_id);
         if (!fragment.isAdded()) {
-            transaction.hide(nowfragment).add(R.id.content, fragment);
+            transaction.hide(nowFragment).add(R.id.content, fragment);
         } else {
-            transaction.hide(nowfragment).show(fragment);
+            transaction.hide(nowFragment).show(fragment);
         }
         //transaction.replace(R.id.content, fragment);
         //transaction.addToBackStack(null);
@@ -91,7 +91,7 @@ public class main extends AppCompatActivity {
     }
 
     public Fragment contain(int id) {
-        for (oneFrgment item : allFragments) {
+        for (oneFragment item : allFragments) {
             if (item.fragmentId == id) {
                 return item.fragment;
             }
@@ -106,7 +106,7 @@ public class main extends AppCompatActivity {
         ActivityCollector.activities.add(this);
 
         AllPictureFragment fragment = new AllPictureFragment();
-        allFragments.add(new oneFrgment(fragment, all_id));
+        allFragments.add(new oneFragment(fragment, all_id));
         getFragmentManager().beginTransaction().replace(R.id.content, fragment).commit();
         now_id = all_id;
 
@@ -116,13 +116,13 @@ public class main extends AppCompatActivity {
     }
 }
 
-class oneFrgment {
+class oneFragment {
     Fragment fragment;
     int fragmentId;
 
-    public oneFrgment(Fragment f, int id) {
+    public oneFragment(Fragment f, int id) {
         fragment = f;
         fragmentId = id;
-        //Log.d("Create fragment", "oneFrgment: once");
+        //Log.d("Create fragment", "oneFragment: once");
     }
 }

@@ -13,4 +13,9 @@
         <item name="android:minHeight">26dp</item>
         <item name="android:maxHeight">26dp</item>
     </style>
+
+    <style name="NoBackGroundDialog" parent="@android:style/Theme.Holo.Dialog.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:minWidth">300dp</item>
+    </style>
 </resources>

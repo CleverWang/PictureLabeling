@@ -46,6 +46,11 @@
             android:theme="@style/Theme.AppCompat.NoActionBar">
 
         </activity>
+        <activity
+            android:name=".LabelPicture"
+            android:launchMode="singleTask">
+
+        </activity>
     </application>
 
 </manifest>
