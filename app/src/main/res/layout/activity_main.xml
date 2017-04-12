@@ -5,48 +5,50 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/bgcolor"
+    android:orientation="vertical"
     tools:context="com.wangcong.picturelabeling.main">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:orientation="horizontal"
+        android:background="@color/colorPrimary"
         android:gravity="center"
-        android:background="@color/colorPrimary">
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="图片标签化"
-            android:textSize="20dp"
-            android:textColor="#ffffff"/>
+            android:textColor="#ffffff"
+            android:textSize="20dp" />
     </LinearLayout>
 
-    <FrameLayout
-        android:id="@+id/content"
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        >
+        android:layout_height="match_parent">
 
-        <fragment
-            android:name="com.wangcong.picturelabeling.background_frgment"
+        <FrameLayout
+            android:id="@+id/content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
 
-    </FrameLayout>
+            <fragment
+                android:name="com.wangcong.picturelabeling.background_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-    <android.support.design.widget.BottomNavigationView
-        android:id="@+id/navigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="?android:attr/windowBackground"
-        app:itemBackground="@color/white"
-        app:itemIconTint="#333333"
-        app:itemTextColor="#333333"
-        app:menu="@menu/navigation" />
+        </FrameLayout>
 
+        <android.support.design.widget.BottomNavigationView
+            android:id="@+id/navigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="?android:attr/windowBackground"
+            app:itemBackground="@color/white"
+            app:itemIconTint="#333333"
+            app:itemTextColor="#333333"
+            app:menu="@menu/navigation" />
+    </android.support.design.widget.CoordinatorLayout>
 </LinearLayout>
