@@ -3,17 +3,28 @@ package com.wangcong.picturelabeling;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+
+import com.wangcong.picturelabeling.Util.GlobalFlags;
 
 import java.util.ArrayList;
 
 public class main extends AppCompatActivity {
     public int all_id = 1, sys_id = 2, his_id = 3, user_id = 4;
     public int now_id = 0;
+    private DrawerLayout mDrawerLayout;
     public ArrayList<oneFragment> allFragments = new ArrayList<>();
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -54,7 +65,7 @@ public class main extends AppCompatActivity {
                         now_id = his_id;
                     }
                     return true;
-                case R.id.user_center:
+                /*case R.id.user_center:
                     if (now_id != user_id) {
                         UserCenterFragment fragment4 = (UserCenterFragment) contain(user_id);
                         if (fragment4 == null) {
@@ -64,7 +75,7 @@ public class main extends AppCompatActivity {
                         changeFragment(fragment4, user_id);
                         now_id = user_id;
                     }
-                    return true;
+                    return true;*/
             }
             return false;
         }
@@ -104,7 +115,13 @@ public class main extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ActivityCollector.activities.add(this);
-
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+        }
         AllPictureFragment fragment = new AllPictureFragment();
         allFragments.add(new oneFragment(fragment, all_id));
         getFragmentManager().beginTransaction().replace(R.id.content, fragment).commit();
@@ -113,8 +130,45 @@ public class main extends AppCompatActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
+        //获取headerView
+        View headerView = navView.getHeaderView(0);
+        TextView user = (TextView) headerView.findViewById(R.id.text_user_name_nav);
+        user.setText(GlobalFlags.getUserID());
+
+        navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.nav_change:
+                        Intent intent = new Intent(main.this, UserInfoChange.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.nav_exit:
+                        Intent intent1 = new Intent(main.this, login.class);
+                        GlobalFlags.setIsLoggedIn(false);
+                        startActivity(intent1);
+                        break;
+                    default:
+                }
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                break;
+            default:
+        }
+        return true;
     }
 }
+
 
 class oneFragment {
     Fragment fragment;

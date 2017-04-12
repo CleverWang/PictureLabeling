@@ -17,9 +17,9 @@
         android:icon="@drawable/ic_access_time_black_48dp"
         android:title="历史标签" />
 
-    <item
+    <!--<item
         android:id="@+id/user_center"
         android:icon="@drawable/ic_account_circle_black_48dp"
-        android:title="用户中心" />
+        android:title="用户中心" />-->
 
 </menu>
