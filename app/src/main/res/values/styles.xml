@@ -10,8 +10,8 @@
 
     <style name="MyRatingBar" parent="@android:style/Widget.RatingBar">
         <item name="android:progressDrawable">@drawable/ratingbar_bg</item>
-        <item name="android:minHeight">26dp</item>
-        <item name="android:maxHeight">26dp</item>
+        <item name="android:minHeight">30dp</item>
+        <item name="android:maxHeight">30dp</item>
     </style>
 
     <style name="NoBackGroundDialog" parent="@android:style/Theme.Holo.Dialog.NoActionBar">

@@ -131,7 +131,7 @@ public class main extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
+        final NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
         //获取headerView
         View headerView = navView.getHeaderView(0);
         TextView user = (TextView) headerView.findViewById(R.id.text_user_name_nav);

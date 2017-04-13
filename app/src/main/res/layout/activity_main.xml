@@ -19,6 +19,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:layout_scrollFlags="scroll|enterAlways|snap"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
         </android.support.design.widget.AppBarLayout>
 
@@ -41,9 +42,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:background="?android:attr/windowBackground"
-            app:itemBackground="@color/white"
-            app:itemIconTint="#333333"
-            app:itemTextColor="#333333"
+            app:itemBackground="@color/bnvbg"
+            app:itemIconTint="@color/selector"
+            app:itemTextColor="@color/selector"
+            app:layout_behavior="com.wangcong.picturelabeling.Util.BottomNavigationViewBehavior"
             app:menu="@menu/navigation" />
     </android.support.design.widget.CoordinatorLayout>
 
