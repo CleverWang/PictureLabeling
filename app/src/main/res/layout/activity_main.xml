@@ -45,7 +45,6 @@
             app:itemBackground="@color/bnvbg"
             app:itemIconTint="@color/selector"
             app:itemTextColor="@color/selector"
-            app:layout_behavior="com.wangcong.picturelabeling.Util.BottomNavigationViewBehavior"
             app:menu="@menu/navigation" />
     </android.support.design.widget.CoordinatorLayout>
 

@@ -25,6 +25,7 @@ public class main extends AppCompatActivity {
     public int all_id = 1, sys_id = 2, his_id = 3, user_id = 4;
     public int now_id = 0;
     private DrawerLayout mDrawerLayout;
+    private NavigationView navView;
     public ArrayList<oneFragment> allFragments = new ArrayList<>();
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -131,7 +132,7 @@ public class main extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        final NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
+        navView = (NavigationView) findViewById(R.id.nav_view);
         //获取headerView
         View headerView = navView.getHeaderView(0);
         TextView user = (TextView) headerView.findViewById(R.id.text_user_name_nav);
@@ -141,6 +142,9 @@ public class main extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
                 switch (item.getItemId()) {
+                    case R.id.nav_home:
+                        mDrawerLayout.closeDrawer(GravityCompat.START);
+                        break;
                     case R.id.nav_change:
                         Intent intent = new Intent(main.this, UserInfoChange.class);
                         startActivity(intent);
@@ -166,6 +170,12 @@ public class main extends AppCompatActivity {
             default:
         }
         return true;
+    }
+
+    @Override
+    protected void onRestart() {
+        navView.setCheckedItem(R.id.nav_home);
+        super.onRestart();
     }
 }
 
