@@ -13,11 +13,19 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.wangcong.picturelabeling.Util.GlobalFlags;
+import com.wangcong.picturelabeling.Util.HttpCallbackListener;
+import com.wangcong.picturelabeling.Util.HttpUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -27,6 +35,8 @@ public class main extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private NavigationView navView;
     public ArrayList<oneFragment> allFragments = new ArrayList<>();
+    private TextView score;
+    private RatingBar ratingBar;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -136,7 +146,10 @@ public class main extends AppCompatActivity {
         //获取headerView
         View headerView = navView.getHeaderView(0);
         TextView user = (TextView) headerView.findViewById(R.id.text_user_name_nav);
+        score = (TextView) headerView.findViewById(R.id.text_scores_nav);
+        ratingBar = (RatingBar) headerView.findViewById(R.id.star_progress_nav);
         user.setText(GlobalFlags.getUserID());
+        setHeadView();
 
         navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -157,6 +170,43 @@ public class main extends AppCompatActivity {
                     default:
                 }
                 return true;
+            }
+        });
+    }
+
+    private void setHeadView() {
+        String address = GlobalFlags.getIpAddress() + "person.jsp";
+        String params = "pptelephone=" + GlobalFlags.getUserID();
+        //Log.d("changeinfo", "setUserInfo: " + address + " " + params);
+        HttpUtil.sendHttpRequest(address, params, new HttpCallbackListener() {
+            @Override
+            public void onFinish(final String response) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("main", "message: " + response);
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            int scor = jsonObject.getInt("pnum");
+                            score.setText("积分：" + scor + "分");
+                            String renwu = jsonObject.getString("prenwu");
+                            ratingBar.setNumStars(Integer.parseInt(renwu));
+                        } catch (JSONException e) {
+                            Toast.makeText(main.this, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onError(final Exception e) {
+                //Log.d("Get from server", "error message: " + e.toString());
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(main.this, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
     }

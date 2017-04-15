@@ -14,12 +14,17 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.wangcong.picturelabeling.Util.GlobalFlags;
+import com.wangcong.picturelabeling.Util.HttpCallbackListener;
+import com.wangcong.picturelabeling.Util.HttpUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class login extends AppCompatActivity {
-    EditText text1_username, text2_pwd;
-    String user_name, pwd;
-    CheckBox rem_pw, auto_login;
-    SharedPreferences sp;
+    private EditText text1_username, text2_pwd;
+    private String user_name, pwd;
+    private CheckBox rem_pw, auto_login;
+    private SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,10 +37,10 @@ public class login extends AppCompatActivity {
 
         text1_username = (EditText) findViewById(R.id.edit_login_account);
         text2_pwd = (EditText) findViewById(R.id.edit_login_password);
-
         sp = this.getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         rem_pw = (CheckBox) findViewById(R.id.memory);
         auto_login = (CheckBox) findViewById(R.id.autologin);
+
         //判断自动登录多选框状态
         if (sp.getBoolean("ISCHECK", false)) {
             rem_pw.setChecked(true);
@@ -46,12 +51,14 @@ public class login extends AppCompatActivity {
                 auto_login.setChecked(true);
 
                 //此处联网判断用户名和密码
-                //！！！！！！！！！！！
+                GlobalFlags.setUserID(sp.getString("USER_NAME", ""));
+                LoginValidation(sp.getString("USER_NAME", ""), sp.getString("PASSWORD", ""));
+
+                /*调试代码
                 GlobalFlags.setUserID(sp.getString("USER_NAME", ""));
                 GlobalFlags.setIsLoggedIn(true);
                 Intent intent = new Intent(login.this, main.class);
-                startActivity(intent);
-
+                startActivity(intent);*/
                 //Toast.makeText(login.this, "请重新输入密码！", Toast.LENGTH_SHORT).show();
             }
         }
@@ -67,9 +74,8 @@ public class login extends AppCompatActivity {
                     Toast.makeText(login.this, "密码或账号不能为空！", Toast.LENGTH_SHORT).show();
                     return;
                 } else {
-
-                    //*********暂时代码
-                    Toast.makeText(login.this, "登录成功！", Toast.LENGTH_SHORT).show();
+                    //*********调试代码
+                    /*Toast.makeText(login.this, "登录成功！", Toast.LENGTH_SHORT).show();
                     if (rem_pw.isChecked()) {
                         //记住用户名、密码
                         SharedPreferences.Editor editor = sp.edit();
@@ -79,32 +85,8 @@ public class login extends AppCompatActivity {
                     }
                     GlobalFlags.setIsLoggedIn(true);
                     Intent intent = new Intent(login.this, main.class);
-                    startActivity(intent);
-                    //**********
-
-                    //不能删除此处代码
-                    /***********String address = "http://192.168.1.104:8080/ssh_pic/login.jsp";
-                     String params = "pptelephone=" + user_name + "&" + "ppassword=" + pwd;
-                     HttpUtil.sendHttpRequest(address, params, new HttpCallbackListener() {
-                    @Override public void onFinish(String response) {
-                    Log.d("Get from server", "message: " + response);
-                    //此处处理从server返回的信息，如果登录成功，则执行下面代码，否则错误信息
-                    Toast.makeText(login.this, "登录成功！", Toast.LENGTH_SHORT).show();
-                    if (rem_pw.isChecked()) {
-                    //记住用户名、密码
-                    SharedPreferences.Editor editor = sp.edit();
-                    editor.putString("USER_NAME", user_name);
-                    editor.putString("PASSWORD", pwd);
-                    editor.commit();
-                    }
-                    Intent intent = new Intent(login.this, main.class);
-                    startActivity(intent);
-                    }
-
-                    @Override public void onError(Exception e) {
-                    Log.d("Get from server", "error message: " + e.toString());
-                    }
-                    });************/
+                    startActivity(intent);*/
+                    LoginValidation(user_name, pwd);
                 }
             }
         });
@@ -143,7 +125,56 @@ public class login extends AppCompatActivity {
                 }
             }
         });
+    }
 
+    private void LoginValidation(final String user_name, final String pwd) {
+        //登录逻辑
+        String address = GlobalFlags.getIpAddress() + "login.jsp";
+        String params = "pptelephone=" + user_name + "&ppassword=" + pwd;
+        HttpUtil.sendHttpRequest(address, params, new HttpCallbackListener() {
+            @Override
+            public void onFinish(final String response) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //Log.d("login", "message: " + response);
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String result = jsonObject.getString("pptelephone");
+                            if (result.equals(user_name)) {
+                                //此处处理从server返回的信息，如果登录成功，则执行下面代码，否则错误信息
+                                Toast.makeText(login.this, "登录成功！", Toast.LENGTH_SHORT).show();
+                                if (rem_pw.isChecked()) {
+                                    //记住用户名、密码
+                                    SharedPreferences.Editor editor = sp.edit();
+                                    editor.putString("USER_NAME", user_name);
+                                    editor.putString("PASSWORD", pwd);
+                                    editor.commit();
+                                }
+                                GlobalFlags.setIsLoggedIn(true);
+                                Intent intent = new Intent(login.this, main.class);
+                                startActivity(intent);
+                            } else if (result.equals("-1")) {
+                                Toast.makeText(login.this, "登录失败！", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            Toast.makeText(login.this, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onError(final Exception e) {
+                //Log.d("Get from server", "error message: " + e.toString());
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(login.this, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
     }
 
     //从注册界面返回用户名和密码

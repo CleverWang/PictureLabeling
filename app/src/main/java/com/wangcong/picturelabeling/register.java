@@ -9,8 +9,59 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.wangcong.picturelabeling.Util.GlobalFlags;
+import com.wangcong.picturelabeling.Util.HttpCallbackListener;
+import com.wangcong.picturelabeling.Util.HttpUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class register extends AppCompatActivity {
-    EditText text1, text2, text3;
+    private EditText text1, text2, text3;
+    private String user_name, pwd;
+    private HttpCallbackListener listener = new HttpCallbackListener() {
+        @Override
+        public void onFinish(final String response) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        //Log.d("JSON", "onFinish: " + response);
+                        JSONObject jsonObject = new JSONObject(response);
+                        String result = jsonObject.getString("reg_answer");
+                        if (result.equals("1")) {
+                            Toast.makeText(register.this, "注册成功！", Toast.LENGTH_SHORT).show();
+                            //注册成功，将用户名和密码传到登录界面
+                            String name = user_name;
+                            String password = pwd;
+                            Intent intent = new Intent();
+                            intent.putExtra("username", name);
+                            intent.putExtra("password", password);
+                            setResult(RESULT_OK, intent);
+                            finish();
+                        } else if (result.equals("-1")) {
+                            //Log.d("JSON", "onFinish: " + result);
+                            Toast.makeText(register.this, "手机号已被注册！", Toast.LENGTH_SHORT).show();
+                        }
+                        //Log.d("JSON", "onFinish: " + result);
+                    } catch (JSONException e) {
+                        Toast.makeText(register.this, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+
+        @Override
+        public void onError(final Exception e) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(register.this, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+            //Log.d("Error", "onError: " + e.getMessage());
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,11 +74,12 @@ public class register extends AppCompatActivity {
         text2 = (EditText) findViewById(R.id.edit_register_password);
         text3 = (EditText) findViewById(R.id.edit_password_confirm);
         Button button = (Button) findViewById(R.id.button_register);
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String user_name = text1.getText().toString().trim();
-                String pwd = text2.getText().toString().trim();
+                user_name = text1.getText().toString().trim();
+                pwd = text2.getText().toString().trim();
                 String confirm = text3.getText().toString().trim();
                 if (user_name.length() == 0) {
                     Toast.makeText(register.this, "请输入手机号注册！", Toast.LENGTH_SHORT).show();
@@ -36,60 +88,10 @@ public class register extends AppCompatActivity {
                 } else if (!pwd.equals(confirm)) {
                     Toast.makeText(register.this, "两次密码不匹配！", Toast.LENGTH_SHORT).show();
                 } else {
-                    //设置输入框不可编辑
-                    text1.setFocusableInTouchMode(false);
-                    text2.setFocusableInTouchMode(false);
-                    text3.setFocusableInTouchMode(false);
-                   /* BmobQuery<Person> query = new BmobQuery<Person>();
-                    query.addWhereEqualTo("name", user_name);
-                    query.setLimit(1);
-                    query.findObjects(new FindListener<Person>() {
-                        @Override
-                        public void done(List<Person> list, BmobException e) {
-                            if (list != null && list.size() != 0) {
-                                Toast.makeText(bluerectangle.this, "用户名已被注册！", Toast.LENGTH_SHORT).show();
-                                text1_username.setText("");
-                            } else {
-                                bluerectangle.p2.setName(text1_username.getText().toString().trim());
-                                String passwd = text2_pwd.getText().toString().trim();
-                                if (passwd.length() == 0) {
-                                    Toast.makeText(bluerectangle.this, "密码不能为空！", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    if (passwd.equals(text3.getText().toString().trim())) {
-                                        bluerectangle.p2.setAddress(passwd);
-                                        bluerectangle.p2.save(new SaveListener<String>() {
-                                            @Override
-                                            public void done(String objectId, BmobException e) {
-                                                if (e == null) {
-                                                    Toast.makeText(bluerectangle.this, "注册成功！", Toast.LENGTH_SHORT).show();
-                                                    String name = new String(text1_username.getText().toString().trim());
-                                                    String password = new String(text2_pwd.getText().toString().trim());
-                                                    Intent intent = new Intent(bluerectangle.this, login.class);
-                                                    intent.putExtra("username", name);
-                                                    intent.putExtra("password", password);
-                                                    startActivity(intent);
-                                                } else {
-                                                    Toast.makeText(bluerectangle.this, "注册失败：" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        });
-                                    } else
-                                        Toast.makeText(bluerectangle.this, "输入的两次密码不同！", Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        }
-                    });*/
-                   //此处编写注册逻辑
-                    Toast.makeText(register.this, "注册成功！", Toast.LENGTH_SHORT).show();
-
-                    //注册成功，将用户名和密码传到登录界面
-                    String name = user_name;
-                    String password = pwd;
-                    Intent intent = new Intent();
-                    intent.putExtra("username", name);
-                    intent.putExtra("password", password);
-                    setResult(RESULT_OK, intent);
-                    finish();
+                    //注册逻辑
+                    String ip = GlobalFlags.getIpAddress() + "register.jsp";
+                    String params = "pptelephone=" + user_name + "&ppassword=" + pwd;
+                    HttpUtil.sendHttpRequest(ip, params, listener);
                 }
             }
         });
