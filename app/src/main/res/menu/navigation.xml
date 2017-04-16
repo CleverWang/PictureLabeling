@@ -4,13 +4,12 @@
     <item
         android:id="@+id/all_picture"
         android:icon="@drawable/ic_dashboard_black_48dp"
-        android:title="所有图片"
-        />
+        android:title="所有图片" />
 
     <item
         android:id="@+id/system_push"
         android:icon="@drawable/ic_system_update_alt_black_48dp"
-        android:title="系统推送" />
+        android:title="今日推送" />
 
     <item
         android:id="@+id/history_picture"
