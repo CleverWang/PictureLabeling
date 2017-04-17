@@ -29,7 +29,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class main extends AppCompatActivity {
-    public int all_id = 1, sys_id = 2, his_id = 3, user_id = 4;
+    public int all_id = 1, sys_id = 2, his_id = 3;
     public int now_id = 0;
     private DrawerLayout mDrawerLayout;
     private NavigationView navView;
@@ -101,8 +101,10 @@ public class main extends AppCompatActivity {
             transaction.setCustomAnimations(R.animator.fragment_slide_right_enter, R.animator.fragment_slide_right_exit);
         Fragment nowFragment = contain(now_id);
         if (!fragment.isAdded()) {
+            //要显示的fragment没有在activity中，则隐藏当前fragment，并添加要显示的fragment到activity中并显示
             transaction.hide(nowFragment).add(R.id.content, fragment);
         } else {
+            //要显示的fragment已在activity中，则隐藏当前fragment，并显示要显示的fragment
             transaction.hide(nowFragment).show(fragment);
         }
         //transaction.replace(R.id.content, fragment);
@@ -111,6 +113,7 @@ public class main extends AppCompatActivity {
         transaction.commit();
     }
 
+    //根据id判断当前的fragment是否在所有fragment链表中，在则返回该id对应的fragment引用
     public Fragment contain(int id) {
         for (oneFragment item : allFragments) {
             if (item.fragmentId == id) {
@@ -125,6 +128,7 @@ public class main extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ActivityCollector.activities.add(this);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -132,14 +136,15 @@ public class main extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
         }
+        //初始的fragment为“所有图片”fragment
         AllPictureFragment fragment = new AllPictureFragment();
         allFragments.add(new oneFragment(fragment, all_id));
         getFragmentManager().beginTransaction().replace(R.id.content, fragment).commit();
         now_id = all_id;
-
+        //底部导航栏
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
+        //侧面滑动菜单栏
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navView = (NavigationView) findViewById(R.id.nav_view);
         //获取headerView
@@ -173,6 +178,7 @@ public class main extends AppCompatActivity {
         });
     }
 
+    //获取个人信息，并在HeaderLayout里面设置
     private void setHeadView() {
         String address = GlobalFlags.getIpAddress() + "person.jsp";
         String params = "pptelephone=" + GlobalFlags.getUserID();
@@ -223,7 +229,23 @@ public class main extends AppCompatActivity {
 
     @Override
     protected void onRestart() {
+        //在主界面时，菜单栏选中的是“主页”
         navView.setCheckedItem(R.id.nav_home);
+        //判断是否要刷新
+        if (GlobalFlags.isNeedtoRefresh()) {
+            Fragment tfrag = contain(now_id);
+            if (tfrag != null) {
+                if (now_id == all_id)
+                    ((AllPictureFragment) tfrag).getAllPicPaths();
+                else if (now_id == sys_id)
+                    ((SystemPushFragment) tfrag).getAllPicPaths();
+            }
+            tfrag = contain(his_id);
+            if (tfrag != null) {
+                ((LabelHistoryFragment) tfrag).getAllPicPaths();
+            }
+            GlobalFlags.setIsNeedtoRefresh(false);
+        }
         super.onRestart();
     }
 }
