@@ -130,6 +130,7 @@ public class main extends AppCompatActivity {
         ActivityCollector.activities.add(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
