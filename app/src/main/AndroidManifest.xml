@@ -52,6 +52,11 @@
             android:launchMode="singleTask">
 
         </activity>
+        <activity
+            android:name=".SelectInterests"
+            android:launchMode="singleTask">
+
+        </activity>
     </application>
 
 </manifest>
