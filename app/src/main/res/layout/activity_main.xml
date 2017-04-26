@@ -29,7 +29,8 @@
                     android:layout_gravity="center"
                     android:text="图片标签化"
                     android:textColor="#f05b48"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.AppBarLayout>
 
