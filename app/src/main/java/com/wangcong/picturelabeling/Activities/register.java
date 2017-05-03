@@ -77,6 +77,7 @@ public class Register extends AppCompatActivity {
         text3 = (EditText) findViewById(R.id.edit_password_confirm);
         Button button = (Button) findViewById(R.id.button_register);
 
+        //注册逻辑
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

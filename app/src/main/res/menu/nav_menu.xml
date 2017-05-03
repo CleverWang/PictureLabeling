@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:checked="true"
+            android:icon="@drawable/ic_home_black_48dp"
+            android:title="主页" />
+        <item
+            android:id="@+id/nav_change"
+            android:icon="@drawable/ic_perm_identity_black_48dp"
+            android:title="修改资料" />
+        <item
+            android:id="@+id/nav_exit"
+            android:icon="@drawable/ic_exit_to_app_black_48dp"
+            android:title="退出登录" />
+    </group>
+</menu>
