@@ -41,7 +41,7 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <fragment
-                android:name="com.wangcong.picturelabeling.background_fragment"
+                android:name="com.wangcong.picturelabeling.Fragments.BackgroundFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 

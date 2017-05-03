@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".login"
+            android:name=".Activities.Login"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.NoActionBar">
@@ -25,35 +25,36 @@
         </activity>
 
         <activity
-            android:name=".main"
+            android:name=".Activities.Main"
             android:launchMode="singleTask">
 
         </activity>
         <activity
-            android:name=".register"
+            android:name=".Activities.Register"
             android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.NoActionBar">
 
         </activity>
 
         <activity
-            android:name=".UserInfoChange"
+            android:name=".Activities.UserInfoChange"
             android:launchMode="singleTask">
 
         </activity>
         <activity
-            android:name=".ChangePWD"
+            android:name=".Activities.ChangePWD"
             android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.NoActionBar">
 
         </activity>
         <activity
-            android:name=".LabelPicture"
-            android:launchMode="singleTask">
+            android:name=".Activities.LabelPicture"
+            android:launchMode="singleTask"
+            android:theme="@style/PicActivityTheme">
 
         </activity>
         <activity
-            android:name=".SelectInterests"
+            android:name=".Activities.SelectInterests"
             android:launchMode="singleTask">
 
         </activity>
