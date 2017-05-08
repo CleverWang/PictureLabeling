@@ -159,6 +159,7 @@ public class Main extends AppCompatActivity {
         TextView user = (TextView) headerView.findViewById(R.id.text_user_name_nav);
         score = (TextView) headerView.findViewById(R.id.text_scores_nav);
         ratingBar = (RatingBar) headerView.findViewById(R.id.star_progress_nav);
+        ratingBar.setIsIndicator(true);
         user.setText(GlobalFlags.getUserID());
         setHeadView();
 
@@ -197,14 +198,18 @@ public class Main extends AppCompatActivity {
                     @Override
                     public void run() {
                         //Log.d("Main", "message: " + response);
+                        String renwu="";
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             int scor = jsonObject.getInt("pnum");
                             score.setText("积分：" + scor + "分");
-                            String renwu = jsonObject.getString("prenwu");
-                            ratingBar.setNumStars(Integer.parseInt(renwu));
+                            renwu = jsonObject.getString("prenwu");
+                            ratingBar.setRating(Integer.parseInt(renwu));
                         } catch (JSONException e) {
-                            Toast.makeText(Main.this, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(Main.this, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            if(renwu.length()==0){
+                                ratingBar.setRating(0);
+                            }
                         }
                     }
                 });

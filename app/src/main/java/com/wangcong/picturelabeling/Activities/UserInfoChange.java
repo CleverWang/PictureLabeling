@@ -31,7 +31,7 @@ import org.json.JSONObject;
 public class UserInfoChange extends AppCompatActivity {
     //private String user, email, major, interests;
     private TextView userview, telepview, emailview, majorview, interbtn;
-    private Button confirm, changepwd;
+    private Button changepwd;
     private AlertDialog alertDialog;
     private String cnick, cemail, cmajar, cinter;
     private static final int NICK = 1, EMAIL = 2, MAJOR = 3;
@@ -156,13 +156,14 @@ public class UserInfoChange extends AppCompatActivity {
                         //Log.d("changeinfo", "message: " + response);
                         try {
                             JSONObject jsonObject = new JSONObject(response);
-                            userview.setText((cnick = jsonObject.getString("pnick")));
                             telepview.setText(jsonObject.getString("ptelephone"));
+                            userview.setText((cnick = jsonObject.getString("pnick")));
                             emailview.setText((cemail = jsonObject.getString("pemail")));
                             majorview.setText((cmajar = jsonObject.getString("major")));
                             interbtn.setText((cinter = jsonObject.getString("inter")));
                         } catch (JSONException e) {
-                            Toast.makeText(UserInfoChange.this, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(UserInfoChange.this, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(UserInfoChange.this, "请完善个人信息！", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
