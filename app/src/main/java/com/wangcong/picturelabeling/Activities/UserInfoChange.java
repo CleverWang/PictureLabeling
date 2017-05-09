@@ -12,9 +12,11 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.wangcong.picturelabeling.R;
 import com.wangcong.picturelabeling.Utils.ActivityCollector;
 import com.wangcong.picturelabeling.Utils.GlobalFlags;
@@ -31,6 +33,7 @@ import org.json.JSONObject;
 public class UserInfoChange extends AppCompatActivity {
     //private String user, email, major, interests;
     private TextView userview, telepview, emailview, majorview, interbtn;
+    private ImageView userIcon;
     private Button changepwd;
     private AlertDialog alertDialog;
     private String cnick, cemail, cmajar, cinter;
@@ -50,6 +53,13 @@ public class UserInfoChange extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        //加载用户头像
+        userIcon = (ImageView) findViewById(R.id.user_icon1);
+        if (GlobalFlags.getIconIndex() != -1)
+            Glide.with(this).load(GlobalFlags.UserIcons[GlobalFlags.getIconIndex()]).into(userIcon);
+        else
+            Glide.with(this).load(GlobalFlags.UserIcons[0]).into(userIcon);
+
         userview = (TextView) findViewById(R.id.edit_user_name);
         userview.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,7 +67,16 @@ public class UserInfoChange extends AppCompatActivity {
                 ChangeDialog("用户名", NICK);
             }
         });
+
+        //点击可以修改用户头像
         telepview = (TextView) findViewById(R.id.text_telephone);
+        telepview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(UserInfoChange.this, SelectUserIcon.class);
+                startActivity(intent);
+            }
+        });
         emailview = (TextView) findViewById(R.id.edit_email);
         emailview.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,7 +125,7 @@ public class UserInfoChange extends AppCompatActivity {
     //获取到的用户信息提交服务器
     private void changeInfo(String cnick, String cemail, String cmajar, String cinter) {
         String address = GlobalFlags.getIpAddress() + "changemessage.jsp";
-        String params = "pptelephone=" + GlobalFlags.getUserID() + "&pnick=" + cnick + "&pemail=" + cemail + "&pmajor=" + cmajar + "&pinter=" + cinter;
+        String params = "pptelephone=" + GlobalFlags.getUserID() + "&pnick=" + cnick + "&pemail=" + cemail + "&pmajor=" + cmajar + "&pinter=" + cinter + "&icon=" + GlobalFlags.getIconIndex();
         //Log.d("changeinfo", "setUserInfo: " + address + "/?" + params);
         HttpUtil.sendHttpRequest(address, params, new HttpCallbackListener() {
             @Override
@@ -119,9 +138,9 @@ public class UserInfoChange extends AppCompatActivity {
                             JSONObject jsonObject = new JSONObject(response);
                             String result = jsonObject.getString("cha_answer");
                             if (result.equals("1"))
-                                Toast.makeText(UserInfoChange.this, "修改成功！", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(UserInfoChange.this, "个人信息修改成功！", Toast.LENGTH_SHORT).show();
                             else if (result.equals("-1"))
-                                Toast.makeText(UserInfoChange.this, "修改失败！", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(UserInfoChange.this, "个人信息修改失败！", Toast.LENGTH_SHORT).show();
                         } catch (JSONException e) {
                             Toast.makeText(UserInfoChange.this, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
@@ -251,7 +270,7 @@ public class UserInfoChange extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 //当用户点击返回并且用户信息有修改时提交用户修改后的个人信息到服务器
-                if (isChanged) {
+                if (isChanged || GlobalFlags.isIconChanged()) {
                     changeInfo(cnick, cemail, cmajar, "暂定");
                     //Toast.makeText(getApplicationContext(), "修改成功！", Toast.LENGTH_SHORT).show();
                     //Log.d("test", "onOptionsItemSelected: "+"shit");
@@ -262,4 +281,18 @@ public class UserInfoChange extends AppCompatActivity {
         }
         return true;
     }
+
+    @Override
+    protected void onRestart() {
+        //判断是否需要重新加载用户头像
+        if (GlobalFlags.isIconChanged())
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Glide.with(getApplication()).load(GlobalFlags.UserIcons[GlobalFlags.getIconIndex()]).into(userIcon);
+                }
+            });
+        super.onRestart();
+    }
+
 }

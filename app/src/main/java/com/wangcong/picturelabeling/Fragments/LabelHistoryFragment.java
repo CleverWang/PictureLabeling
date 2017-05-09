@@ -20,7 +20,7 @@ import com.wangcong.picturelabeling.R;
 import com.wangcong.picturelabeling.Utils.GlobalFlags;
 import com.wangcong.picturelabeling.Utils.HttpCallbackListener;
 import com.wangcong.picturelabeling.Utils.HttpUtil;
-import com.wangcong.picturelabeling.Utils.NewImageAdapterHistory;
+import com.wangcong.picturelabeling.Adapters.NewImageAdapterHistory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -188,7 +188,7 @@ public class LabelHistoryFragment extends Fragment {
                                 }
                             } else
                                 oklabels = "没有标签信息！";
-                            OnePicHistory one = new OnePicHistory(temp[0], path, oklabels.trim(), temp[3], temp[4]);
+                            OnePicHistory one = new OnePicHistory(temp[0], path, oklabels.trim(), temp[3], (temp.length == 4) ? "null" : temp[4]);//如果推荐标签为空，设置为null
                             oklabels = "";
                             if (temp[3].equals("0")) {//根据是否为0判断是否已被判定
                                 if (isNoJudgedView)

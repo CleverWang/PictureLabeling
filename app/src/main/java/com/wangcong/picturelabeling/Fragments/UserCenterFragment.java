@@ -7,13 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.wangcong.picturelabeling.R;
-import com.wangcong.picturelabeling.Activities.UserInfoChange;
-import com.wangcong.picturelabeling.Utils.GlobalFlags;
 import com.wangcong.picturelabeling.Activities.Login;
+import com.wangcong.picturelabeling.Activities.UserInfoChange;
+import com.wangcong.picturelabeling.R;
+import com.wangcong.picturelabeling.Utils.GlobalFlags;
 
 /**
  * Created by 13307 on 2017/3/20.
@@ -48,8 +47,8 @@ public class UserCenterFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        RatingBar ratingBar = (RatingBar) view.findViewById(R.id.star_progress);
-        ratingBar.setNumStars(5);
+        //RatingBar ratingBar = (RatingBar) view.findViewById(R.id.star_progress);
+        //ratingBar.setNumStars(5);
         return view;
     }
 }

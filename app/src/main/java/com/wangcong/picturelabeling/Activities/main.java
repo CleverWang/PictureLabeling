@@ -15,10 +15,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.RatingBar;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.wangcong.picturelabeling.Beans.OneFragment;
 import com.wangcong.picturelabeling.Fragments.AllPictureFragment;
 import com.wangcong.picturelabeling.Fragments.LabelHistoryFragment;
@@ -34,14 +36,18 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import static com.wangcong.picturelabeling.R.drawable.staroff;
+
 public class Main extends AppCompatActivity {
     public int all_id = 1, sys_id = 2, his_id = 3;
     public int now_id = 0;
     private DrawerLayout mDrawerLayout;
     private NavigationView navView;
+    private ImageView userIcon;
     public ArrayList<OneFragment> allFragments = new ArrayList<>();
     private TextView score;
-    private RatingBar ratingBar;
+    //private RatingBar ratingBar;
+    private LinearLayout rating;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -151,16 +157,22 @@ public class Main extends AppCompatActivity {
         //底部导航栏
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
         //侧面滑动菜单栏
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navView = (NavigationView) findViewById(R.id.nav_view);
+
         //获取headerView
         View headerView = navView.getHeaderView(0);
         TextView user = (TextView) headerView.findViewById(R.id.text_user_name_nav);
-        score = (TextView) headerView.findViewById(R.id.text_scores_nav);
-        ratingBar = (RatingBar) headerView.findViewById(R.id.star_progress_nav);
-        ratingBar.setIsIndicator(true);
         user.setText(GlobalFlags.getUserID());
+
+        score = (TextView) headerView.findViewById(R.id.text_scores_nav);
+        //ratingBar = (RatingBar) headerView.findViewById(R.id.star_progress_nav);
+        //ratingBar.setIsIndicator(true);
+        rating = (LinearLayout) headerView.findViewById(R.id.linearlayout_rating);
+        userIcon = (ImageView) headerView.findViewById(R.id.user_icon);
+
         setHeadView();
 
         navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -197,19 +209,29 @@ public class Main extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        //Log.d("Main", "message: " + response);
-                        String renwu="";
+                        //Log.d("Main", "personal message: " + response);
+                        String renwu = "";
+                        int icon = -1;
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             int scor = jsonObject.getInt("pnum");
                             score.setText("积分：" + scor + "分");
                             renwu = jsonObject.getString("prenwu");
-                            ratingBar.setRating(Integer.parseInt(renwu));
+                            //ratingBar.setRating(Integer.parseInt(renwu));
+                            ratingStars(Integer.parseInt(renwu));
+                            icon = jsonObject.getInt("icon");
+                            Glide.with(getApplication()).load(GlobalFlags.UserIcons[icon]).into(userIcon);
+                            if (icon != -1)
+                                GlobalFlags.setIconIndex(icon);
+                            //Log.d("Main", "icon num: " + GlobalFlags.getIconIndex());
                         } catch (JSONException e) {
                             //Toast.makeText(Main.this, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            if(renwu.length()==0){
-                                ratingBar.setRating(0);
+                            if (renwu.length() == 0) {
+                                //ratingBar.setRating(0);
+                                ratingStars(0);
                             }
+                            if (icon == -1)
+                                Glide.with(getApplication()).load(GlobalFlags.UserIcons[0]).into(userIcon);
                         }
                     }
                 });
@@ -226,6 +248,28 @@ public class Main extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    /**
+     * 设置用户当前任务进度，总共5颗星
+     *
+     * @param num 任务进度（实星星个数）
+     */
+    private void ratingStars(int num) {
+        //添加实星星
+        for (int i = 0; i < num; i++) {
+            ImageView star_on = new ImageView(this);
+            star_on.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            star_on.setImageResource(R.drawable.staron);
+            rating.addView(star_on);
+        }
+        //添加剩余空星星
+        for (int i = 0; i < 5 - num; i++) {
+            ImageView star_off = new ImageView(this);
+            star_off.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            star_off.setImageResource(staroff);
+            rating.addView(star_off);
+        }
     }
 
     @Override
@@ -257,6 +301,16 @@ public class Main extends AppCompatActivity {
                 ((LabelHistoryFragment) tfrag).getAllPicPaths();
             }
             GlobalFlags.setIsNeedtoRefresh(false);
+        }
+        //判断是否要重新加载用户头像
+        if (GlobalFlags.isIconChanged()) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Glide.with(getApplicationContext()).load(GlobalFlags.UserIcons[GlobalFlags.getIconIndex()]).into(userIcon);
+                }
+            });
+            GlobalFlags.setIsIconChanged(false);
         }
         super.onRestart();
     }

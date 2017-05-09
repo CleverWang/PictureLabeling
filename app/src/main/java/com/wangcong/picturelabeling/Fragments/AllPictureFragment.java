@@ -19,7 +19,7 @@ import com.wangcong.picturelabeling.R;
 import com.wangcong.picturelabeling.Utils.GlobalFlags;
 import com.wangcong.picturelabeling.Utils.HttpCallbackListener;
 import com.wangcong.picturelabeling.Utils.HttpUtil;
-import com.wangcong.picturelabeling.Utils.NewImageAdapter;
+import com.wangcong.picturelabeling.Adapters.NewImageAdapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
