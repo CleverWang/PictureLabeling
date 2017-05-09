@@ -23,41 +23,30 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".Activities.Main"
-            android:launchMode="singleTask">
-
-        </activity>
+            android:launchMode="singleTask"></activity>
         <activity
             android:name=".Activities.Register"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
-
-        </activity>
-
+            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
         <activity
             android:name=".Activities.UserInfoChange"
-            android:launchMode="singleTask">
-
-        </activity>
+            android:launchMode="singleTask"></activity>
         <activity
             android:name=".Activities.ChangePWD"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
-
-        </activity>
+            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
         <activity
             android:name=".Activities.LabelPicture"
             android:launchMode="singleTask"
-            android:theme="@style/PicActivityTheme">
-
-        </activity>
+            android:theme="@style/PicActivityTheme"></activity>
         <activity
             android:name=".Activities.SelectInterests"
-            android:launchMode="singleTask">
-
-        </activity>
+            android:launchMode="singleTask"></activity>
+        <activity
+            android:name=".Activities.SelectUserIcon"
+            android:launchMode="singleTask"></activity>
     </application>
 
 </manifest>

@@ -6,13 +6,20 @@
     android:orientation="vertical"
     android:padding="10dp">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/icon_image"
+    <!--<de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/user_icon"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
-        android:src="@drawable/nav_icon" />
+        android:src="@drawable/boy1" />-->
+
+    <ImageView
+        android:id="@+id/user_icon"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp" />
 
     <TextView
         android:id="@+id/text_user_name_nav"
@@ -58,19 +65,26 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:text="进度："
             android:textColor="#fff"
             android:textSize="18sp" />
 
-        <RatingBar
+        <!--<RatingBar
             android:id="@+id/star_progress_nav"
             style="@style/MyRatingBar"
-            android:gravity="center_vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:numStars="5"
             android:rating="1"
-            android:stepSize="1" />
+            android:stepSize="1" />-->
+        <LinearLayout
+            android:id="@+id/linearlayout_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal"></LinearLayout>
     </LinearLayout>
 
 

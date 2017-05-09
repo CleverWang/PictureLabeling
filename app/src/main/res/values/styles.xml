@@ -8,11 +8,11 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="MyRatingBar" parent="@android:style/Widget.RatingBar">
+    <!--<style name="MyRatingBar" parent="@android:style/Widget.RatingBar">
         <item name="android:progressDrawable">@drawable/ratingbar_bg</item>
-        <item name="android:minHeight">10dp</item>
-        <item name="android:maxHeight">30dp</item>
-    </style>
+        <item name="android:minHeight">16dp</item>
+        <item name="android:maxHeight">48dp</item>
+    </style>-->
 
     <style name="NoBackGroundDialog" parent="@android:style/Theme.Holo.Dialog.NoActionBar">
         <item name="android:windowBackground">@android:color/transparent</item>

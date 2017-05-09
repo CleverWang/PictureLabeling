@@ -70,7 +70,7 @@ public class LabelPicture extends AppCompatActivity {
         String recommend = intent.getStringExtra("Recommends");
 
         //解析传过来的推荐标签
-        if (!recommend.equals("null")) {
+        if (!(recommend.equals("null") || recommend == null)) {
             String[] t = recommend.split("-");
             for (int i = 0; i < t.length; i++) {
                 recommends.add(t[i]);
