@@ -96,7 +96,8 @@ public class UserInfoChange extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(UserInfoChange.this, SelectInterests.class);
-                startActivity(intent);
+                intent.putExtra("old_interests", cinter);
+                startActivityForResult(intent, 1);
             }
         });
 
@@ -179,7 +180,8 @@ public class UserInfoChange extends AppCompatActivity {
                             userview.setText((cnick = jsonObject.getString("pnick")));
                             emailview.setText((cemail = jsonObject.getString("pemail")));
                             majorview.setText((cmajar = jsonObject.getString("major")));
-                            interbtn.setText((cinter = jsonObject.getString("inter")));
+                            cinter = jsonObject.getString("inter");
+                            //interbtn.setText((cinter = jsonObject.getString("inter")).replace("-", " | "));
                         } catch (JSONException e) {
                             //Toast.makeText(UserInfoChange.this, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
                             Toast.makeText(UserInfoChange.this, "请完善个人信息！", Toast.LENGTH_SHORT).show();
@@ -271,7 +273,7 @@ public class UserInfoChange extends AppCompatActivity {
             case android.R.id.home:
                 //当用户点击返回并且用户信息有修改时提交用户修改后的个人信息到服务器
                 if (isChanged || GlobalFlags.isIconChanged()) {
-                    changeInfo(cnick, cemail, cmajar, "暂定");
+                    changeInfo(cnick, cemail, cmajar, cinter);
                     //Toast.makeText(getApplicationContext(), "修改成功！", Toast.LENGTH_SHORT).show();
                     //Log.d("test", "onOptionsItemSelected: "+"shit");
                 }
@@ -295,4 +297,18 @@ public class UserInfoChange extends AppCompatActivity {
         super.onRestart();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case 1:
+                if (resultCode == RESULT_OK) {
+                    String dataReturn = data.getStringExtra("interests_return");
+                    if (!dataReturn.equals(cinter)) {
+                        cinter = dataReturn;
+                        //interbtn.setText(cinter.replace("-", " | "));
+                        isChanged = true;
+                    }
+                }
+        }
+    }
 }
