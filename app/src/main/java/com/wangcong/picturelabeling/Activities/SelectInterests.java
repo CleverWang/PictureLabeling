@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +44,7 @@ public class SelectInterests extends AppCompatActivity {
 
     private ArrayList<String> interests = new ArrayList<>();//用户选择的所有兴趣
     private LinearLayout linearLayout_interests;
+    private ScrollView scrollView;
     //private TextView results;
 
     @Override
@@ -63,6 +65,7 @@ public class SelectInterests extends AppCompatActivity {
 
         //results = (TextView) findViewById(R.id.interests_results);
         linearLayout_interests = (LinearLayout) findViewById(R.id.linearlayout_interests);
+        scrollView = (ScrollView) findViewById(R.id.scrollView_interests);
 
         //加载传过来的旧的兴趣
         Intent intent = getIntent();
@@ -148,6 +151,13 @@ public class SelectInterests extends AppCompatActivity {
                 if (index == -1) {
                     interests.add(s);
                     updateResultView();
+                    //将结果显示移动到最底端
+                    scrollView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                        }
+                    });
                 } else
                     Toast.makeText(SelectInterests.this, "你已选择过！", Toast.LENGTH_SHORT).show();
 
@@ -178,6 +188,7 @@ public class SelectInterests extends AppCompatActivity {
      */
     private void updateResultView() {
         linearLayout_interests.removeAllViewsInLayout();
+        //计算需要的水平线性布局的个数，一个水平线性布局放3个兴趣TextView
         int rows = (interests.size() % 3 == 0) ? (interests.size() / 3) : (interests.size() / 3 + 1);
         LinearLayout[] linear = new LinearLayout[rows];
         for (int i = 0; i < rows; i++) {
@@ -185,7 +196,7 @@ public class SelectInterests extends AppCompatActivity {
             linear[i].setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             linear[i].setOrientation(LinearLayout.HORIZONTAL);
         }
-        int index = 0;
+        int index = 0;//当前需要放入兴趣TextView的线性布局
         for (int i = 0; i < interests.size(); i++) {
             TextView temp = new TextView(getApplicationContext());
             LinearLayout.LayoutParams tparam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -205,6 +216,7 @@ public class SelectInterests extends AppCompatActivity {
                 }
             });
             linear[index].addView(temp);
+            //满3个后填入下一个线性布局中
             if ((i + 1) % 3 == 0) {
                 index++;
             }
@@ -254,11 +266,11 @@ public class SelectInterests extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         returnNewInterests();
-        super.onBackPressed();
+        finish();
     }
 
     /**
-     * 返回选择好的新的兴趣
+     * 返回选择好的新的兴趣，兴趣之间由"-"隔开
      */
     private void returnNewInterests() {
         String inters = "-";

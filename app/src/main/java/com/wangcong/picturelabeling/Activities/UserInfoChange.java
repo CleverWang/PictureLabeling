@@ -95,6 +95,7 @@ public class UserInfoChange extends AppCompatActivity {
         interbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //向选择兴趣界面传递旧的兴趣，并接收传回来的新的兴趣
                 Intent intent = new Intent(UserInfoChange.this, SelectInterests.class);
                 intent.putExtra("old_interests", cinter);
                 startActivityForResult(intent, 1);
@@ -285,15 +286,24 @@ public class UserInfoChange extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        if (isChanged || GlobalFlags.isIconChanged()) {
+            changeInfo(cnick, cemail, cmajar, cinter);
+        }
+        finish();
+    }
+
+    @Override
     protected void onRestart() {
         //判断是否需要重新加载用户头像
         if (GlobalFlags.isIconChanged())
-            runOnUiThread(new Runnable() {
+            /*runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     Glide.with(getApplication()).load(GlobalFlags.UserIcons[GlobalFlags.getIconIndex()]).into(userIcon);
                 }
-            });
+            });*/
+            Glide.with(getApplication()).load(GlobalFlags.UserIcons[GlobalFlags.getIconIndex()]).into(userIcon);
         super.onRestart();
     }
 
