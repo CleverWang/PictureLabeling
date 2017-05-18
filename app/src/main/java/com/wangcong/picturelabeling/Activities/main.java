@@ -291,9 +291,12 @@ public class Main extends AppCompatActivity {
         if (GlobalFlags.isNeedtoRefresh()) {
             Fragment tfrag = contain(now_id);
             if (tfrag != null) {
-                if (now_id == all_id)
-                    ((AllPictureFragment) tfrag).getAllPicPaths();
-                else if (now_id == sys_id)
+                if (now_id == all_id) {
+                    if (!((AllPictureFragment) tfrag).isSearched())//刷新所有图片界面
+                        ((AllPictureFragment) tfrag).getAllPicPaths();
+                    else
+                        ((AllPictureFragment) tfrag).searchPics();//是搜索后再打标签返回的，刷新搜索界面
+                } else if (now_id == sys_id)
                     ((SystemPushFragment) tfrag).getAllPicPaths();
             }
             tfrag = contain(his_id);
