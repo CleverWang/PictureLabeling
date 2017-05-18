@@ -13,14 +13,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.wangcong.picturelabeling.Adapters.NewImageAdapterHistory;
 import com.wangcong.picturelabeling.Beans.OnePicHistory;
 import com.wangcong.picturelabeling.R;
 import com.wangcong.picturelabeling.Utils.GlobalFlags;
 import com.wangcong.picturelabeling.Utils.HttpCallbackListener;
 import com.wangcong.picturelabeling.Utils.HttpUtil;
-import com.wangcong.picturelabeling.Adapters.NewImageAdapterHistory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -79,6 +80,8 @@ public class LabelHistoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.recycler_view, container, false);
         getAllPicPaths();
+        LinearLayout search = (LinearLayout) view.findViewById(R.id.linearlayout_search_in_all_pic);
+        search.setVisibility(View.GONE);
         /*gridView = (GridView) view.findViewById(R.id.gridview_history);
         adapter = new ImageAdapterHistory(getActivity(), allPaths, allImages, imageWidth, allLabels);
         gridView.setAdapter(adapter);

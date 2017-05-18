@@ -75,6 +75,8 @@ public class SystemPushFragment extends Fragment {
         View view = inflater.inflate(R.layout.recycler_view, container, false);
         getAllPicPaths();
         LinearLayout radio = (LinearLayout) view.findViewById(R.id.radio_button);
+        LinearLayout search = (LinearLayout) view.findViewById(R.id.linearlayout_search_in_all_pic);
+        search.setVisibility(View.GONE);
         radio.setVisibility(View.GONE);
         swipeRefresh = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
         swipeRefresh.setColorSchemeResources(R.color.colorAccent);

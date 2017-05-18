@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg"
+    android:background="@color/colorPrimary"
     android:orientation="vertical">
 
     <ImageView
@@ -10,7 +10,15 @@
         android:layout_height="100dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="80dp"
-        android:background="@drawable/ic_dashboard_white_48dp" />
+        android:background="@drawable/ic_dashboard_48dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="图片标签化"
+        android:textColor="#ffffff"
+        android:textSize="20sp" />
 
     <LinearLayout
         android:layout_width="260dp"
@@ -41,7 +49,7 @@
         android:layout_width="260dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/rounded_rect"
         android:weightSum="1">
 
@@ -68,7 +76,7 @@
         android:layout_width="260dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/rounded_rect"
         android:weightSum="1">
 
@@ -97,7 +105,7 @@
         android:layout_width="260dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/bluerectangle"
         android:text="注册"
         android:textColor="#ffffff"

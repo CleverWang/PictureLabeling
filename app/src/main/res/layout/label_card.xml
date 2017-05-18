@@ -114,20 +114,20 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <Button
+                <!--<Button
                     android:id="@+id/button_recommend"
                     android:layout_width="80dp"
                     android:layout_height="40dp"
                     android:layout_marginRight="5dp"
                     android:background="@drawable/selector_btn"
                     android:text="推荐标签"
-                    android:textSize="14sp" />
+                    android:textSize="14sp" />-->
 
                 <Button
                     android:id="@+id/button_upload_label"
                     android:layout_width="80dp"
                     android:layout_height="40dp"
-                    android:layout_marginRight="5dp"
+                    android:layout_marginRight="10dp"
                     android:background="@drawable/selector_btn"
                     android:text="确定"
                     android:textColor="#b20231"
@@ -157,6 +157,12 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="推荐标签" />
 
             <LinearLayout
                 android:layout_width="wrap_content"

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg"
+    android:background="@color/colorPrimary"
     android:orientation="vertical">
 
     <ImageView
@@ -11,7 +11,15 @@
         android:layout_height="100dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="80dp"
-        app:srcCompat="@drawable/ic_dashboard_white_48dp" />
+        app:srcCompat="@drawable/ic_dashboard_48dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="图片标签化"
+        android:textColor="#ffffff"
+        android:textSize="20sp" />
 
     <LinearLayout
         android:layout_width="260dp"
@@ -43,7 +51,7 @@
         android:layout_width="260dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/rounded_rect"
         android:orientation="horizontal"
         android:weightSum="1">
@@ -70,7 +78,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="15dp">
+        android:layout_marginTop="10dp">
 
         <CheckBox
             android:id="@+id/memory"
@@ -78,8 +86,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="30dp"
             android:text="记住密码"
-            android:textColor="#ffffff"
-            />
+            android:textColor="#ffffff" />
 
         <CheckBox
             android:id="@+id/autologin"
@@ -94,7 +101,7 @@
         android:layout_width="260dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/cyanrectangle"
         android:text="登录"
         android:textColor="#ffffff"

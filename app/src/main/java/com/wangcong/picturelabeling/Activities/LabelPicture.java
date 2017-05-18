@@ -139,7 +139,7 @@ public class LabelPicture extends AppCompatActivity {
             }
         });
 
-        recommend_button = (Button) view.findViewById(R.id.button_recommend);
+        /*recommend_button = (Button) view.findViewById(R.id.button_recommend);
         recommend_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -157,10 +157,11 @@ public class LabelPicture extends AppCompatActivity {
                     }
                 }
             }
-        });
+        });*/
         recommends_view = (CardView) view.findViewById(R.id.recommend_view);
         recommends_view.setVisibility(View.GONE);//最开始推荐页是不可见的
         if (recommends.size() != 0) {
+            recommends_view.setVisibility(View.VISIBLE);
             recommend_labels[0] = (TextView) view.findViewById(R.id.recommend_1);
             recommend_labels[1] = (TextView) view.findViewById(R.id.recommend_2);
             recommend_labels[2] = (TextView) view.findViewById(R.id.recommend_3);
@@ -192,6 +193,7 @@ public class LabelPicture extends AppCompatActivity {
             for (String item : PicLabels)
                 edit_labels[index++].setText(item);
         }
+
         upload = (Button) view.findViewById(R.id.button_upload_label);
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -218,7 +220,10 @@ public class LabelPicture extends AppCompatActivity {
         alertDialog.setContentView(view);
     }
 
-    //为每一个推荐推荐标签添加点击事件，点击后可以填入空的EditText中，如果已填入，则不重复填入
+    /**
+     * 为每一个推荐标签添加点击事件，点击后可以填入空的EditText中，如果已填入，则不重复填入
+     * @param index 可以点击的推荐标签，下标0~index
+     */
     private void setRecommendLabelToEditText(int index) {
         for (int i = 0; i < index; i++) {
             final String label = recommends.get(i);
@@ -277,7 +282,7 @@ public class LabelPicture extends AppCompatActivity {
                                 GlobalFlags.setIsNeedtoRefresh(true);
                                 Toast.makeText(LabelPicture.this, "上传成功！", Toast.LENGTH_SHORT).show();
                                 upload.setVisibility(View.GONE);
-                                recommend_button.setVisibility(View.GONE);
+                                //recommend_button.setVisibility(View.GONE);
                                 recommends_view.setVisibility(View.GONE);
                                 quit.setText("关闭");
                                 for (int k = 0; k < 6; k++)

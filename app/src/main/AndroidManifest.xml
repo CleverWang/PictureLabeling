@@ -25,7 +25,8 @@
         </activity>
         <activity
             android:name=".Activities.Main"
-            android:launchMode="singleTask"></activity>
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan"></activity>
         <activity
             android:name=".Activities.Register"
             android:launchMode="singleTask"
