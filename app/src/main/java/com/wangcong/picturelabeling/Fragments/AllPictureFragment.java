@@ -68,6 +68,8 @@ public class AllPictureFragment extends Fragment {
                     //adapter.notifyItemRangeInserted(0, allPaths.size());
                     break;
                 case LOAD_FAILED:
+                    allPics.clear();
+                    adapter.notifyDataSetChanged();
                     Toast.makeText(getActivity(), "图片加载失败！", Toast.LENGTH_SHORT).show();
                     swipeRefresh.setRefreshing(false);
                     break;
@@ -211,7 +213,7 @@ public class AllPictureFragment extends Fragment {
 
     public void searchPics() {
         String address = GlobalFlags.getIpAddress() + "picsearch";
-        String params = "search=" + searchContent;
+        String params = "search=" + searchContent + "&phone=" + GlobalFlags.getUserID();
         //Log.d("search", "searchPics: "+searchContent);
         HttpUtil.sendHttpRequest(address, params, new HttpCallbackListener() {
             @Override

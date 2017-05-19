@@ -178,9 +178,9 @@ public class UserInfoChange extends AppCompatActivity {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             telepview.setText(jsonObject.getString("ptelephone"));
-                            userview.setText((cnick = jsonObject.getString("pnick")));
-                            emailview.setText((cemail = jsonObject.getString("pemail")));
-                            majorview.setText((cmajar = jsonObject.getString("major")));
+                            userview.setText((cnick = jsonObject.getString("pnick")).equals("null") ? (cnick = "") : cnick);
+                            emailview.setText((cemail = jsonObject.getString("pemail")).equals("null") ? (cemail = "") : cemail);
+                            majorview.setText((cmajar = jsonObject.getString("major")).equals("null") ? (cmajar = "") : cmajar);
                             cinter = jsonObject.getString("inter");
                             //interbtn.setText((cinter = jsonObject.getString("inter")).replace("-", " | "));
                         } catch (JSONException e) {
@@ -226,6 +226,7 @@ public class UserInfoChange extends AppCompatActivity {
                 editText.setText(cmajar);
                 break;
         }
+        editText.setSelection(editText.getText().length());//光标移到文字最后
         final Button cancel = (Button) view.findViewById(R.id.button_change_item_cancel);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -275,6 +276,7 @@ public class UserInfoChange extends AppCompatActivity {
                 //当用户点击返回并且用户信息有修改时提交用户修改后的个人信息到服务器
                 if (isChanged || GlobalFlags.isIconChanged()) {
                     changeInfo(cnick, cemail, cmajar, cinter);
+                    GlobalFlags.setIsIconChanged(false);
                     //Toast.makeText(getApplicationContext(), "修改成功！", Toast.LENGTH_SHORT).show();
                     //Log.d("test", "onOptionsItemSelected: "+"shit");
                 }

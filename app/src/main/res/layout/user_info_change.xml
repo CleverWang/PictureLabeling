@@ -113,6 +113,7 @@
                     android:background="@null"
                     android:ems="11"
                     android:gravity="right"
+                    android:hint="点击修改"
                     android:inputType="textPersonName"
                     android:textColor="#000000"
                     android:textSize="16sp" />
@@ -152,6 +153,7 @@
                     android:background="@null"
                     android:ems="11"
                     android:gravity="right"
+                    android:hint="点击修改"
                     android:inputType="textEmailAddress"
                     android:textColor="#000000"
                     android:textSize="16sp" />
@@ -190,6 +192,7 @@
                     android:background="@null"
                     android:ems="11"
                     android:gravity="right"
+                    android:hint="点击修改"
                     android:textColor="#000000"
                     android:textSize="16sp" />
 
@@ -228,7 +231,7 @@
                     android:layout_weight="1"
                     android:background="@null"
                     android:gravity="right"
-                    android:text="点击进行查看与修改"
+                    android:text="点击查看与修改"
                     android:textColor="#000000"
                     android:textSize="16sp" />
 

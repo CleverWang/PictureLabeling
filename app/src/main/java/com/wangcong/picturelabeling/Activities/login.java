@@ -48,6 +48,7 @@ public class Login extends AppCompatActivity {
             rem_pw.setChecked(true);
             text1_username.setText(sp.getString("USER_NAME", ""));
             text2_pwd.setText(sp.getString("PASSWORD", ""));
+            text1_username.setSelection(text1_username.getText().length());//光标移到文字最后
             //判断自动登陆多选框状态
             if (sp.getBoolean("AUTO_ISCHECK", false)) {
                 auto_login.setChecked(true);
@@ -192,6 +193,7 @@ public class Login extends AppCompatActivity {
                         auto_login.setChecked(false);
                         text1_username.setText(name);
                         text2_pwd.setText(password);
+                        text1_username.setSelection(text1_username.getText().length());//光标移到文字最后
                     }
                 }
                 break;

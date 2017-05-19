@@ -1,5 +1,6 @@
 package com.wangcong.picturelabeling.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -193,6 +195,7 @@ public class LabelPicture extends AppCompatActivity {
             for (String item : PicLabels)
                 edit_labels[index++].setText(item);
         }
+        edit_labels[0].setSelection(edit_labels[0].getText().length());//光标移到文字最后
 
         upload = (Button) view.findViewById(R.id.button_upload_label);
         upload.setOnClickListener(new View.OnClickListener() {
@@ -222,6 +225,7 @@ public class LabelPicture extends AppCompatActivity {
 
     /**
      * 为每一个推荐标签添加点击事件，点击后可以填入空的EditText中，如果已填入，则不重复填入
+     *
      * @param index 可以点击的推荐标签，下标0~index
      */
     private void setRecommendLabelToEditText(int index) {
@@ -248,6 +252,7 @@ public class LabelPicture extends AppCompatActivity {
                                 break;
                             }
                         }
+                        edit_labels[0].setSelection(edit_labels[0].getText().length());//光标移到文字最后
                         if (j == 6)
                             Toast.makeText(LabelPicture.this, "标签已填满，无法再填入！", Toast.LENGTH_SHORT).show();
                     }
@@ -285,8 +290,13 @@ public class LabelPicture extends AppCompatActivity {
                                 //recommend_button.setVisibility(View.GONE);
                                 recommends_view.setVisibility(View.GONE);
                                 quit.setText("关闭");
-                                for (int k = 0; k < 6; k++)
+                                for (int k = 0; k < 6; k++) {
+                                    edit_labels[k].setFocusable(false);
                                     edit_labels[k].setFocusableInTouchMode(false);
+                                    edit_labels[k].clearFocus();
+                                }
+                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(edit_labels[0].getWindowToken(), 0);//隐藏软键盘
                             } else
                                 Toast.makeText(LabelPicture.this, "上传失败！", Toast.LENGTH_SHORT).show();
 

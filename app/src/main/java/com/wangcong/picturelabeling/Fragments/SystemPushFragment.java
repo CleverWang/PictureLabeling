@@ -57,6 +57,8 @@ public class SystemPushFragment extends Fragment {
                     //adapter.notifyItemRangeInserted(0, allPaths.size());
                     break;
                 case LOAD_FAILED:
+                    allPics.clear();
+                    adapter.notifyDataSetChanged();
                     Toast.makeText(getActivity(), "图片加载失败！", Toast.LENGTH_SHORT).show();
                     swipeRefresh.setRefreshing(false);
                     break;

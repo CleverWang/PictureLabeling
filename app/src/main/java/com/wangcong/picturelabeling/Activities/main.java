@@ -104,6 +104,12 @@ public class Main extends AppCompatActivity {
 
     };
 
+    /**
+     * 切换fragment
+     *
+     * @param fragment 要切换到的fragment
+     * @param toId     要切换到的fragment的标识id
+     */
     public void changeFragment(Fragment fragment, int toId) {
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -125,7 +131,12 @@ public class Main extends AppCompatActivity {
         transaction.commit();
     }
 
-    //根据id判断当前的fragment是否在所有fragment链表中，在则返回该id对应的fragment引用
+    /**
+     * 根据id判断当前的fragment是否在所有fragment链表中，在则返回该id对应的fragment引用
+     *
+     * @param id 要判断的fragment的标识id
+     * @return 存在则返回fragment的引用，否则返回null
+     */
     public Fragment contain(int id) {
         for (OneFragment item : allFragments) {
             if (item.getFragmentId() == id) {
@@ -149,11 +160,13 @@ public class Main extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
         }
+
         //初始的fragment为“所有图片”fragment
         AllPictureFragment fragment = new AllPictureFragment();
         allFragments.add(new OneFragment(fragment, all_id));
         getFragmentManager().beginTransaction().replace(R.id.content, fragment).commit();
         now_id = all_id;
+
         //底部导航栏
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -166,13 +179,11 @@ public class Main extends AppCompatActivity {
         View headerView = navView.getHeaderView(0);
         TextView user = (TextView) headerView.findViewById(R.id.text_user_name_nav);
         user.setText(GlobalFlags.getUserID());
-
         score = (TextView) headerView.findViewById(R.id.text_scores_nav);
         //ratingBar = (RatingBar) headerView.findViewById(R.id.star_progress_nav);
         //ratingBar.setIsIndicator(true);
         rating = (LinearLayout) headerView.findViewById(R.id.linearlayout_rating);
         userIcon = (ImageView) headerView.findViewById(R.id.user_icon);
-
         setHeadView();
 
         navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -198,7 +209,9 @@ public class Main extends AppCompatActivity {
         });
     }
 
-    //获取个人信息，并在HeaderLayout里面设置
+    /**
+     * 获取个人信息，并在HeaderLayout里面设置
+     */
     private void setHeadView() {
         String address = GlobalFlags.getIpAddress() + "person.jsp";
         String params = "pptelephone=" + GlobalFlags.getUserID();
@@ -256,6 +269,7 @@ public class Main extends AppCompatActivity {
      * @param num 任务进度（实星星个数）
      */
     private void ratingStars(int num) {
+        rating.removeAllViews();
         //添加实星星
         for (int i = 0; i < num; i++) {
             ImageView star_on = new ImageView(this);
@@ -287,9 +301,11 @@ public class Main extends AppCompatActivity {
     protected void onRestart() {
         //在主界面时，菜单栏选中的是“主页”
         navView.setCheckedItem(R.id.nav_home);
-        //判断是否要刷新
+        //刷新HeadView
+        setHeadView();
+        //判断是否要刷新fragment
         if (GlobalFlags.isNeedtoRefresh()) {
-            Fragment tfrag = contain(now_id);
+            /*Fragment tfrag = contain(now_id);
             if (tfrag != null) {
                 if (now_id == all_id) {
                     if (!((AllPictureFragment) tfrag).isSearched())//刷新所有图片界面
@@ -298,6 +314,17 @@ public class Main extends AppCompatActivity {
                         ((AllPictureFragment) tfrag).searchPics();//是搜索后再打标签返回的，刷新搜索界面
                 } else if (now_id == sys_id)
                     ((SystemPushFragment) tfrag).getAllPicPaths();
+            }*/
+            Fragment tfrag = contain(all_id);
+            if (tfrag != null) {
+                if (!((AllPictureFragment) tfrag).isSearched())//刷新所有图片界面
+                    ((AllPictureFragment) tfrag).getAllPicPaths();
+                else
+                    ((AllPictureFragment) tfrag).searchPics();//是搜索后再打标签返回的，刷新搜索界面
+            }
+            tfrag = contain(sys_id);
+            if (tfrag != null) {
+                ((SystemPushFragment) tfrag).getAllPicPaths();
             }
             tfrag = contain(his_id);
             if (tfrag != null) {
@@ -306,15 +333,16 @@ public class Main extends AppCompatActivity {
             GlobalFlags.setIsNeedtoRefresh(false);
         }
         //判断是否要重新加载用户头像
-        if (GlobalFlags.isIconChanged()) {
+        /*if (GlobalFlags.isIconChanged()) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     Glide.with(getApplicationContext()).load(GlobalFlags.UserIcons[GlobalFlags.getIconIndex()]).into(userIcon);
                 }
             });
+            Glide.with(getApplicationContext()).load(GlobalFlags.UserIcons[GlobalFlags.getIconIndex()]).into(userIcon);
             GlobalFlags.setIsIconChanged(false);
-        }
+        }*/
         super.onRestart();
     }
 }
