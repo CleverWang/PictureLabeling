@@ -58,7 +58,7 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(final IconAdapter.ViewHolder holder, int position) {
         int iconPath = icons.get(position);
-        Glide.with(context).load(iconPath).placeholder(R.drawable.loading_and_failed_pic).error(R.drawable.loading_and_failed_pic).into(holder.icon);
+        Glide.with(context).load(iconPath).placeholder(R.drawable.loading).error(R.drawable.failed).into(holder.icon);
     }
 
     @Override

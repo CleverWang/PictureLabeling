@@ -183,7 +183,7 @@ public class SystemPushFragment extends Fragment {
     /*private Bitmap getBitmap(int id) {
         Bitmap rawbitmap = BitmapFactory.decodeResource(getActivity().getResources(), id);
         Bitmap combitmap = BitmapUtil.compressBasedOnSquare(rawbitmap, imageWidth);
-        Bitmap cutbitmap = BitmapUtil.cut(combitmap, imageWidth, imageWidth);
+        Bitmap cutbitmap = itmapUtil.cut(combitmap, imageWidth, imageWidth);
         return cutbitmap;
     }*/
 }

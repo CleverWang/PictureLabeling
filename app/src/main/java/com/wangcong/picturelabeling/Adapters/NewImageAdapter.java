@@ -3,6 +3,7 @@ package com.wangcong.picturelabeling.Adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,11 @@ import com.wangcong.picturelabeling.Activities.LabelPicture;
 import com.wangcong.picturelabeling.Beans.OnePic;
 import com.wangcong.picturelabeling.R;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by 13307 on 2017/4/12.
@@ -73,12 +78,23 @@ public class NewImageAdapter extends RecyclerView.Adapter<NewImageAdapter.ViewHo
     @Override
     public void onBindViewHolder(final NewImageAdapter.ViewHolder holder, int position) {
         String imagePath = allPics.get(position).getPath();
+        Pattern p = Pattern.compile("[\\u4e00-\\u9fa5]");
+        //找到中文url中中文
+        Matcher ma = p.matcher(imagePath);
+        while (ma.find()) {
+            String group = ma.group();
+            try {
+                imagePath = imagePath.replaceFirst(group, URLEncoder.encode(group, "utf-8"));
+            } catch (UnsupportedEncodingException e) {
+                Log.d("error", "onBindViewHolder: " + e.getMessage());
+            }
+        }
         if (imagePath.contains("http")) {
             //String imagePath = GlobalFlags.getIpAddress() + "image/atm1.jpg";
             //Log.d("load", "onBindViewHolder: " + imagePath);
-            Glide.with(context).load(imagePath).placeholder(R.drawable.loading_and_failed_pic).error(R.drawable.loading_and_failed_pic).into(holder.Image);
+            Glide.with(context).load(imagePath).placeholder(R.drawable.loading).error(R.drawable.failed).into(holder.Image);
         } else
-            Glide.with(context).load(Integer.parseInt(imagePath)).placeholder(R.drawable.loading_and_failed_pic).error(R.drawable.loading_and_failed_pic).into(holder.Image);
+            Glide.with(context).load(Integer.parseInt(imagePath)).placeholder(R.drawable.loading).error(R.drawable.failed).into(holder.Image);
     }
 
     @Override
