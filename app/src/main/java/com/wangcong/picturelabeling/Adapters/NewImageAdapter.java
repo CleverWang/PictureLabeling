@@ -3,7 +3,6 @@ package com.wangcong.picturelabeling.Adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,10 +25,7 @@ import java.util.regex.Pattern;
 
 public class NewImageAdapter extends RecyclerView.Adapter<NewImageAdapter.ViewHolder> {
     private Context context;
-    //private int ImageHeight;
-    //private ArrayList<String> imagePaths;
-    //private ArrayList<String> imageIds;
-    private ArrayList<OnePic> allPics;
+    private ArrayList<OnePic> allPics;//保存所有图片信息
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         View EveryView;
@@ -45,9 +41,6 @@ public class NewImageAdapter extends RecyclerView.Adapter<NewImageAdapter.ViewHo
     public NewImageAdapter(Context context, ArrayList<OnePic> all) {
         this.context = context;
         allPics = all;
-        //imagePaths = paths;
-        //imageIds = ids;
-        //this.ImageHeight = imageHeight;
     }
 
     @Override
@@ -59,12 +52,8 @@ public class NewImageAdapter extends RecyclerView.Adapter<NewImageAdapter.ViewHo
         holder.EveryView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //点击图片后，转跳打标签界面
                 int position = holder.getAdapterPosition();
-                /*Fruit fruit = mFruitList.get(position);
-                Intent intent = new Intent(mContext, FruitActivity.class);
-                intent.putExtra(FruitActivity.FRUIT_NAME, fruit.getName());
-                intent.putExtra(FruitActivity.FRUIT_IMAGE_ID, fruit.getImageId());
-                mContext.startActivity(intent);*/
                 Intent intent = new Intent(context, LabelPicture.class);
                 intent.putExtra("PicPath", allPics.get(position).getPath());
                 intent.putExtra("PicId", allPics.get(position).getId());
@@ -86,9 +75,10 @@ public class NewImageAdapter extends RecyclerView.Adapter<NewImageAdapter.ViewHo
             try {
                 imagePath = imagePath.replaceFirst(group, URLEncoder.encode(group, "utf-8"));
             } catch (UnsupportedEncodingException e) {
-                Log.d("error", "onBindViewHolder: " + e.getMessage());
+                //Log.d("error", "onBindViewHolder: " + e.getMessage());
             }
         }
+        //加载每一张图片
         if (imagePath.contains("http")) {
             //String imagePath = GlobalFlags.getIpAddress() + "image/atm1.jpg";
             //Log.d("load", "onBindViewHolder: " + imagePath);

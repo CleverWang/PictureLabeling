@@ -5,11 +5,11 @@ package com.wangcong.picturelabeling.Beans;
  */
 
 public class OnePicHistory {
-    String id;
-    String path;
-    String label;
-    String isClickable;
-    String recommends;
+    String id;//图片ID
+    String path;//图片路径
+    String label;//图片已有标签
+    String isClickable;//是否已经判定
+    String recommends;//该图片推荐标签
 
     public String getRecommends() {
         return recommends;

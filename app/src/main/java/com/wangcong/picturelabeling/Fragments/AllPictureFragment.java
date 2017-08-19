@@ -8,7 +8,6 @@ import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wangcong.picturelabeling.Adapters.NewImageAdapter;
@@ -36,45 +36,50 @@ import java.util.ArrayList;
  */
 
 public class AllPictureFragment extends Fragment {
-    //GridView gridView;
-    //ImageAdapter adapter;
-    //private ArrayList<String> allPaths = new ArrayList<String>();
-    //private ArrayList<String> allIds = new ArrayList<String>();
-    private ArrayList<OnePic> allPics = new ArrayList<>();
+    private ArrayList<OnePic> allPics = new ArrayList<>();//保存所有图片的信息
     private NewImageAdapter adapter;
-    private SwipeRefreshLayout swipeRefresh;
+    private SwipeRefreshLayout swipeRefresh;//下拉刷新
     private EditText searchText;
-    private String searchContent = "";
-    private final static int LOAD_OK = 1;
-    private final static int LOAD_FAILED = 2;
-    private final static int LOAD_NO_PICS = 3;
-    private final static int SEARCH_NO_PICS = 4;
-    private boolean isSearched = false;
+    private TextView loadInfo;
+    private LinearLayout linearLayout_info;
+    private ImageView smile, cry;
+    private String searchContent = "";//搜索关键字
+    private final int LOAD_OK = 1;//加载成功消息
+    private final int LOAD_FAILED = 2;//加载失败消息
+    private final int LOAD_NO_PICS = 3;//加载图片为空消息
+    private final int SEARCH_NO_PICS = 4;//搜索无结果消息
+    private boolean isSearched = false;//是否已搜索标识
 
-    //int imageWidth;
-    //ArrayList<Bitmap> allPics;
-    //private static final String TAG = "AllPictureFragment";
+    //消息处理
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case LOAD_OK:
+                    linearLayout_info.setVisibility(View.GONE);
                     //加载完所有图片路径后，通知适配器进行图片加载
                     adapter.notifyDataSetChanged();
                     swipeRefresh.setRefreshing(false);
                     //for (String item : allPaths)
                     //Log.d("path", "onFinish: " + item);
-                    //adapter.notifyItemRemoved(0);
-                    //adapter.notifyItemRangeInserted(0, allPaths.size());
                     break;
                 case LOAD_FAILED:
+                    linearLayout_info.setVisibility(View.VISIBLE);
+                    cry.setVisibility(View.VISIBLE);
+                    smile.setVisibility(View.GONE);
+                    loadInfo.setText("图片加载失败，请下拉刷新！");
+                    //加载失败后清空缓存数据，提示用户
                     allPics.clear();
                     adapter.notifyDataSetChanged();
-                    Toast.makeText(getActivity(), "图片加载失败！", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), "图片加载失败！", Toast.LENGTH_SHORT).show();
                     swipeRefresh.setRefreshing(false);
                     break;
                 case LOAD_NO_PICS:
-                    Toast.makeText(getActivity(), "所有图片都已打过标签，可去历史标签进行修改！", Toast.LENGTH_SHORT).show();
+                    linearLayout_info.setVisibility(View.VISIBLE);
+                    smile.setVisibility(View.VISIBLE);
+                    cry.setVisibility(View.GONE);
+                    loadInfo.setText("所有图片都已打过标签，\n可去历史标签进行修改！");
+                    //Toast.makeText(getActivity(), "所有图片都已打过标签，可去历史标签进行修改！", Toast.LENGTH_SHORT).show();
                     swipeRefresh.setRefreshing(false);
                     break;
                 case SEARCH_NO_PICS:
@@ -94,19 +99,18 @@ public class AllPictureFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.recycler_view, container, false);
+
         getAllPicPaths();
-        /*gridView = (GridView) view.findViewById(R.id.gridview_all_pic);
-        adapter = new ImageAdapter(getActivity(), allPaths, allPics, imageWidth);
-        gridView.setAdapter(adapter);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), LabelPicture.class);
-                startActivity(intent);
-            }
-        });*/
+
+        //隐藏“历史记录”中的未判定，已判定按钮
         LinearLayout radio = (LinearLayout) view.findViewById(R.id.radio_button);
         radio.setVisibility(View.GONE);
+        linearLayout_info = (LinearLayout) view.findViewById(R.id.linearlayout_load_info);
+        smile = (ImageView) view.findViewById(R.id.image_smile);
+        cry = (ImageView) view.findViewById(R.id.image_cry);
+        cry.setVisibility(View.GONE);
+        loadInfo = (TextView) view.findViewById(R.id.textview_load_information);
+
         searchText = (EditText) view.findViewById(R.id.edit_search_in_all_pic);
         ImageView searchBtn = (ImageView) view.findViewById(R.id.button_search_in_all_pic);
         searchBtn.setOnClickListener(new View.OnClickListener() {
@@ -141,41 +145,35 @@ public class AllPictureFragment extends Fragment {
         return view;
     }
 
+    /**
+     * 从server获取所有图片的信息
+     */
     public void getAllPicPaths() {
-        //allPaths.add(String.valueOf(R.drawable.one));
-        // allPaths.add(String.valueOf(R.drawable.two));
-        //allPaths.add(String.valueOf(R.drawable.three));
         String address = GlobalFlags.getIpAddress() + "showpersonallpicture";
         String params = "pptelephone=" + GlobalFlags.getUserID();
         //Log.d("changeinfo", "setUserInfo: " + address + " " + params);
         HttpUtil.sendHttpRequest(address, params, new HttpCallbackListener() {
             @Override
             public void onFinish(final String response) {
-                Log.d("all", "message: " + response);
+                //Log.d("all", "message: " + response);
                 Message message = new Message();
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     String paths = jsonObject.getString("showpersonallpicture");
                     //Log.d("paths", "onFinish: " + paths);
-                    //paths = "image\\atm1.jpg,image\\atm1.jpg,image\\atm2.jpg,image\\atm2.jpg,image\\atm3.jpg,image\\atm4.jpg";
                     if (paths != null && paths.length() > 0) {
-                        //allPaths.clear();
-                        //allIds.clear();
                         allPics.clear();
                         String t[] = paths.split(";");//以;分割，获取每张图片的路径
                         String temp[];
                         for (int i = 0; i < t.length; i++) {
                             temp = t[i].split(",");//temp[0]为图片id，temp[1]为图片路径，temp[2]为推荐标签
                             int index = temp[1].indexOf('\\');//获取\的位置，将\替换成/
-                            //allIds.add(temp[0]);
-                            //allPaths.add(GlobalFlags.getIpAddress() + temp[1].substring(0, index) + "/" + temp[1].substring(index + 1));
                             allPics.add(new OnePic(temp[0], GlobalFlags.getIpAddress() + temp[1].substring(0, index) + "/" + temp[1].substring(index + 1), temp[2]));
                         }
                         message.what = LOAD_OK;
                     } else
                         message.what = LOAD_NO_PICS;
                     handler.sendMessage(message);//所有图片加载完毕，发送加载完毕message
-                    //adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     message.what = LOAD_FAILED;
                     handler.sendMessage(message);
@@ -192,25 +190,11 @@ public class AllPictureFragment extends Fragment {
                 handler.sendMessage(message);
             }
         });
-
-        /*WindowManager mWm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
-        Point windowSize = new Point();
-        mWm.getDefaultDisplay().getSize(windowSize);
-        int windowWidth = windowSize.x;
-        int imagePadding = 30;
-        int colums = 3;
-        imageWidth = windowWidth / colums - imagePadding;
-
-        allPics = new ArrayList<Bitmap>();
-        Bitmap roundcorbitmap1 = getBitmap(R.drawable.one);
-        Bitmap roundcorbitmap2 = getBitmap(R.drawable.two);
-        Bitmap roundcorbitmap3 = getBitmap(R.drawable.three);
-        allPics.add(roundcorbitmap1);
-        allPics.add(roundcorbitmap2);
-        allPics.add(roundcorbitmap3);*/
-
     }
 
+    /**
+     * 根据搜索关键字进行图片搜索
+     */
     public void searchPics() {
         String address = GlobalFlags.getIpAddress() + "picsearch";
         String params = "search=" + searchContent + "&phone=" + GlobalFlags.getUserID();
@@ -218,7 +202,7 @@ public class AllPictureFragment extends Fragment {
         HttpUtil.sendHttpRequest(address, params, new HttpCallbackListener() {
             @Override
             public void onFinish(final String response) {
-                Log.d("search", "message: " + response);
+                //Log.d("search", "message: " + response);
                 Message message = new Message();
                 try {
                     JSONObject jsonObject = new JSONObject(response);
@@ -250,76 +234,4 @@ public class AllPictureFragment extends Fragment {
             }
         });
     }
-
-    /*private Bitmap getBitmap(int id) {
-        Bitmap rawbitmap = BitmapFactory.decodeResource(getActivity().getResources(), id);
-        Bitmap combitmap = BitmapUtil.compressBasedOnSquare(rawbitmap, imageWidth);
-        Bitmap cutbitmap = BitmapUtil.cut(combitmap, imageWidth, imageWidth);
-        return cutbitmap;
-    }*/
-/*
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        Log.d(TAG, "onAttach");
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate");
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        Log.d(TAG, "onActivityCreated");
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.d(TAG, "onStart");
-    }*/
-
-    /*@Override
-    public void onResume() {
-        if (GlobalFlags.isNeedtoRefresh())
-            if (GlobalFlags.getNowFragment() == GlobalFlags.DailyPush_Fragment) {
-                GlobalFlags.setIsNeedtoRefresh(false);
-                getAllPicPaths();
-            }
-        super.onResume();
-        Log.d("allpic", "onResume");
-    }*/
-/*
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.d(TAG, "onPause");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d(TAG, "onStop");
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        Log.d(TAG, "onDestroyView");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy");
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        Log.d(TAG, "onDetach");
-    }*/
 }

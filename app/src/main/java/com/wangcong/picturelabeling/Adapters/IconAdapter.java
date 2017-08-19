@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> {
     private Context context;
-    private ArrayList<Integer> icons;
+    private ArrayList<Integer> icons;//存储头像ID
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView icon;
@@ -43,6 +43,7 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> {
         holder.icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //选择好头像后，记录头像ID
                 int position = holder.getAdapterPosition();
                 if (GlobalFlags.getIconIndex() != position) {
                     GlobalFlags.setIconIndex(position);
@@ -57,6 +58,7 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(final IconAdapter.ViewHolder holder, int position) {
+        //载入每一个头像
         int iconPath = icons.get(position);
         Glide.with(context).load(iconPath).placeholder(R.drawable.loading).error(R.drawable.failed).into(holder.icon);
     }

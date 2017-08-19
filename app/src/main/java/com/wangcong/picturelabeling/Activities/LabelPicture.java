@@ -22,7 +22,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.wangcong.picturelabeling.R;
-import com.wangcong.picturelabeling.Utils.ActivityCollector;
 import com.wangcong.picturelabeling.Utils.GlobalFlags;
 import com.wangcong.picturelabeling.Utils.HttpCallbackListener;
 import com.wangcong.picturelabeling.Utils.HttpUtil;
@@ -37,25 +36,24 @@ import java.util.ArrayList;
  */
 
 public class LabelPicture extends AppCompatActivity {
-    private PhotoView imageView;
-    private int clickCount = 0, rec_click_count = 0;
+    private PhotoView imageView;//待打标签的图片
+    private int clickCount = 0;//图片点击次数
     private Toolbar toolbar;
-    private FloatingActionButton fab;
-    private AlertDialog alertDialog;
-    private Button quit, recommend_button, upload;
-    private String PicId;
-    private ArrayList<String> PicLabels = new ArrayList<>();
-    private ArrayList<String> newLabels = new ArrayList<>();
+    private FloatingActionButton fab;//打标签界面弹出按钮
+    private AlertDialog alertDialog;//打标签界面
+    private Button quit, upload;//退出打标签，上传按钮
+    private String PicId;//图片ID
+    private ArrayList<String> PicLabels = new ArrayList<>();//旧标签
+    private ArrayList<String> newLabels = new ArrayList<>();//新标签
     private EditText[] edit_labels = new EditText[6];
     private TextView[] recommend_labels = new TextView[6];
     private CardView recommends_view;
-    private ArrayList<String> recommends = new ArrayList<>();
+    private ArrayList<String> recommends = new ArrayList<>();//推荐标签
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.label_picture);
-        ActivityCollector.activities.add(this);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar2);
         toolbar.setTitle("");
@@ -102,11 +100,7 @@ public class LabelPicture extends AppCompatActivity {
                     //mainView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
                     toolbar.setVisibility(View.GONE);
                     fab.setVisibility(View.GONE);
-                } /*else if (clickCount == 1) {
-                    //再单击放大
-                    clickCount++;
-                    imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                }*/ else {
+                } else {
                     //最后单击恢复隐藏的控件
                     //mainView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
                     toolbar.setVisibility(View.VISIBLE);
@@ -125,6 +119,9 @@ public class LabelPicture extends AppCompatActivity {
         });
     }
 
+    /**
+     * 打标签界面
+     */
     private void labelDialog() {
         alertDialog = new AlertDialog.Builder(LabelPicture.this, R.style.NoBackGroundDialog).create();
         alertDialog.show();
@@ -137,7 +134,7 @@ public class LabelPicture extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
-                rec_click_count = 0;
+                //rec_click_count = 0;
             }
         });
 
@@ -162,6 +159,7 @@ public class LabelPicture extends AppCompatActivity {
         });*/
         recommends_view = (CardView) view.findViewById(R.id.recommend_view);
         recommends_view.setVisibility(View.GONE);//最开始推荐页是不可见的
+        //有推荐标签，显示推荐标签界面
         if (recommends.size() != 0) {
             recommends_view.setVisibility(View.VISIBLE);
             recommend_labels[0] = (TextView) view.findViewById(R.id.recommend_1);
@@ -206,12 +204,14 @@ public class LabelPicture extends AppCompatActivity {
                     temp[m] = edit_labels[m].getText().toString().trim();
                 String labels = "";
                 newLabels.clear();
+                //保存新标签
                 for (int i = 0; i < 6; i++) {
                     if (temp[i] != null && temp[i].length() > 0) {
                         labels = labels + "-" + temp[i];
                         newLabels.add(temp[i]);
                     }
                 }
+                //判断并上传新标签
                 if (!labels.isEmpty() && labels != null) {
                     labels = labels.substring(1);
                     if (!PicId.isEmpty() && PicId != null)
@@ -261,7 +261,11 @@ public class LabelPicture extends AppCompatActivity {
         }
     }
 
-    //上传标签
+    /**
+     * 上传标签
+     *
+     * @param labels 待上传的标签
+     */
     private void uploadAllLabels(String labels) {
         String address = GlobalFlags.getIpAddress() + "tagup";
         String params = "pptelephone=" + GlobalFlags.getUserID() + "&picid=" + PicId + "&pictag=" + labels;
@@ -284,12 +288,13 @@ public class LabelPicture extends AppCompatActivity {
                                 for (String item : newLabels) {
                                     PicLabels.add(item);
                                 }
-                                GlobalFlags.setIsNeedtoRefresh(true);
+                                GlobalFlags.setIsNeedtoRefresh(true);//设置全局变量“fragment需要刷新”为true
                                 Toast.makeText(LabelPicture.this, "上传成功！", Toast.LENGTH_SHORT).show();
-                                upload.setVisibility(View.GONE);
+                                upload.setVisibility(View.GONE);//隐藏上传按钮
                                 //recommend_button.setVisibility(View.GONE);
-                                recommends_view.setVisibility(View.GONE);
-                                quit.setText("关闭");
+                                recommends_view.setVisibility(View.GONE);//隐藏标签推荐界面
+                                quit.setText("关闭");//退出按钮改成关闭
+                                //不可再编辑
                                 for (int k = 0; k < 6; k++) {
                                     edit_labels[k].setFocusable(false);
                                     edit_labels[k].setFocusableInTouchMode(false);
@@ -301,7 +306,7 @@ public class LabelPicture extends AppCompatActivity {
                                 Toast.makeText(LabelPicture.this, "上传失败！", Toast.LENGTH_SHORT).show();
 
                         } catch (JSONException e) {
-                            Toast.makeText(LabelPicture.this, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LabelPicture.this, "发生错误，请重试！", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -312,7 +317,7 @@ public class LabelPicture extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(LabelPicture.this, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LabelPicture.this, "发生错误，请重试！", Toast.LENGTH_SHORT).show();
                     }
                 });
             }

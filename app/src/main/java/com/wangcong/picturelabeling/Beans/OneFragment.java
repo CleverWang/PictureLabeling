@@ -7,6 +7,15 @@ import android.app.Fragment;
  */
 
 public class OneFragment {
+
+    private Fragment fragment;//当前fragment
+    private int fragmentId;//当前fragment的ID
+
+    public OneFragment(Fragment f, int id) {
+        fragment = f;
+        fragmentId = id;
+    }
+
     public Fragment getFragment() {
         return fragment;
     }
@@ -23,11 +32,5 @@ public class OneFragment {
         this.fragmentId = fragmentId;
     }
 
-    private Fragment fragment;
-    private int fragmentId;
 
-    public OneFragment(Fragment f, int id) {
-        fragment = f;
-        fragmentId = id;
-    }
 }

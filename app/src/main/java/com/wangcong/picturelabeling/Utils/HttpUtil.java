@@ -16,27 +16,28 @@ public class HttpUtil {
                 try {
                     URL url = new URL(address);
                     connection = (HttpURLConnection) url.openConnection();
-                    connection.setRequestMethod("POST");
+                    connection.setRequestMethod("POST");//POST方式
                     //connection.setRequestProperty("Content-type", "text/html");
-                    connection.setRequestProperty("Accept-Charset", "utf-8");
+                    connection.setRequestProperty("Accept-Charset", "utf-8");//接受格式为UTF-8编码
                     //connection.setRequestProperty("contentType", "utf-8");
+                    //设置超时时间
                     connection.setConnectTimeout(8000);
                     connection.setReadTimeout(8000);
+                    //设置允许输入输出
                     connection.setDoInput(true);
                     connection.setDoOutput(true);
+
                     //登录后每次发送请求加上session id
                     if (GlobalFlags.isLoggedIn()) {
                         if (GlobalFlags.getSessionId() != null && GlobalFlags.getSessionId().length() != 0)
                             connection.setRequestProperty("cookie", GlobalFlags.getSessionId());
                     }
 
+                    //向server输出参数
                     OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream(), "utf-8");
                     out.write(params);//格式为param1=value1&param2=value2...
                     out.flush();
                     out.close();
-                    //PrintWriter printWriter=new PrintWriter(connection.getOutputStream());
-                    //printWriter.write(params);//格式为param1=value1&param2=value2...
-                    //printWriter.flush();
 
                     InputStream in = connection.getInputStream();
                     //第一次登录时记下seesion id
@@ -47,6 +48,7 @@ public class HttpUtil {
                             //获得到sessionId之后，可以将sessionId保存
                         }
                     }
+                    //读取server返回的信息
                     BufferedReader reader = new BufferedReader(new InputStreamReader(in));
                     StringBuilder response = new StringBuilder();
                     String line;

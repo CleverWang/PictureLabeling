@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,10 +28,7 @@ import java.util.regex.Pattern;
 
 public class NewImageAdapterHistory extends RecyclerView.Adapter<NewImageAdapterHistory.ViewHolder> {
     private Context context;
-    //private int ImageHeight;
-    //ArrayList<String> imagePaths;
-    //ArrayList<String> allLabels;
-    private ArrayList<OnePicHistory> allHisPics;
+    private ArrayList<OnePicHistory> allHisPics;//保存所有历史图片信息
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         CardView EveryView;
@@ -50,7 +46,6 @@ public class NewImageAdapterHistory extends RecyclerView.Adapter<NewImageAdapter
     public NewImageAdapterHistory(Context context, ArrayList<OnePicHistory> allPics) {
         this.context = context;
         allHisPics = allPics;
-        //this.ImageHeight = imageHeight;
     }
 
     @Override
@@ -59,22 +54,17 @@ public class NewImageAdapterHistory extends RecyclerView.Adapter<NewImageAdapter
         final ViewHolder holder = new ViewHolder(view);
         holder.EveryView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) {//点击图片打标签
                 int position = holder.getAdapterPosition();
                 OnePicHistory one = allHisPics.get(position);
-                if (one.getIsClickable().equals("0")) {
-                /*Fruit fruit = mFruitList.get(position);
-                Intent intent = new Intent(mContext, FruitActivity.class);
-                intent.putExtra(FruitActivity.FRUIT_NAME, fruit.getName());
-                intent.putExtra(FruitActivity.FRUIT_IMAGE_ID, fruit.getImageId());
-                mContext.startActivity(intent);*/
+                if (one.getIsClickable().equals("0")) {//未判定
                     Intent intent = new Intent(context, LabelPicture.class);
                     intent.putExtra("PicPath", one.getPath());
                     intent.putExtra("PicId", one.getId());
                     intent.putExtra("PicLabel", one.getLabel());
                     intent.putExtra("Recommends", one.getRecommends());
                     context.startActivity(intent);
-                } else
+                } else//已判定
                     Toast.makeText(context, "该图片标签已判定完毕！", Toast.LENGTH_SHORT).show();
             }
         });
@@ -93,7 +83,7 @@ public class NewImageAdapterHistory extends RecyclerView.Adapter<NewImageAdapter
             try {
                 imagePath = imagePath.replaceFirst(group, URLEncoder.encode(group, "utf-8"));
             } catch (UnsupportedEncodingException e) {
-                Log.d("error", "onBindViewHolder: " + e.getMessage());
+                //Log.d("error", "onBindViewHolder: " + e.getMessage());
             }
         }
         Glide.with(context).load(imagePath).placeholder(R.drawable.loading).error(R.drawable.failed).into(holder.Image);

@@ -5,6 +5,17 @@ package com.wangcong.picturelabeling.Beans;
  */
 
 public class OnePic {
+
+    private String id;//图片ID
+    private String path;//图片路径
+    private String recommends;//该图片的推荐标签
+
+    public OnePic(String a, String b, String c) {
+        id = a;
+        path = b;
+        recommends = c;
+    }
+
     public String getId() {
         return id;
     }
@@ -29,13 +40,4 @@ public class OnePic {
         this.recommends = recommends;
     }
 
-    private String id;
-    private String path;
-    private String recommends;
-
-    public OnePic(String a, String b, String c) {
-        id = a;
-        path = b;
-        recommends = c;
-    }
 }

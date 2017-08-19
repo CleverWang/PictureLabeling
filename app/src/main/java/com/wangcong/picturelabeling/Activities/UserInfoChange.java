@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.wangcong.picturelabeling.R;
-import com.wangcong.picturelabeling.Utils.ActivityCollector;
 import com.wangcong.picturelabeling.Utils.GlobalFlags;
 import com.wangcong.picturelabeling.Utils.HttpCallbackListener;
 import com.wangcong.picturelabeling.Utils.HttpUtil;
@@ -31,19 +30,17 @@ import org.json.JSONObject;
  */
 
 public class UserInfoChange extends AppCompatActivity {
-    //private String user, email, major, interests;
-    private TextView userview, telepview, emailview, majorview, interbtn;
-    private ImageView userIcon;
+    private TextView userview, telepview, emailview, majorview, interview;//用户名、电话号码、邮箱、专业、兴趣
+    private ImageView userIcon;//用户头像
     private Button changepwd;
     private AlertDialog alertDialog;
-    private String cnick, cemail, cmajar, cinter;
-    private static final int NICK = 1, EMAIL = 2, MAJOR = 3;
+    private String cnick, cemail, cmajar, cinter;//保存用户名、邮箱、专业、兴趣
+    private final int NICK = 1, EMAIL = 2, MAJOR = 3;//标识用户名、邮箱、专业的ID
     private boolean isChanged = false;//是否有用户信息被修改
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_info_change);
-        ActivityCollector.activities.add(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar1);
         toolbar.setTitle("");
@@ -60,6 +57,7 @@ public class UserInfoChange extends AppCompatActivity {
         else
             Glide.with(this).load(GlobalFlags.UserIcons[0]).into(userIcon);
 
+        //点击可以修改用户名
         userview = (TextView) findViewById(R.id.edit_user_name);
         userview.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,6 +75,8 @@ public class UserInfoChange extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        //点击可以修改邮箱
         emailview = (TextView) findViewById(R.id.edit_email);
         emailview.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,6 +84,8 @@ public class UserInfoChange extends AppCompatActivity {
                 ChangeDialog("E-mail", EMAIL);
             }
         });
+
+        //点击可以修改专业
         majorview = (TextView) findViewById(R.id.edit_major);
         majorview.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,8 +93,10 @@ public class UserInfoChange extends AppCompatActivity {
                 ChangeDialog("专业", MAJOR);
             }
         });
-        interbtn = (TextView) findViewById(R.id.button_interesting);
-        interbtn.setOnClickListener(new View.OnClickListener() {
+
+        //点击可以修改兴趣
+        interview = (TextView) findViewById(R.id.button_interesting);
+        interview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //向选择兴趣界面传递旧的兴趣，并接收传回来的新的兴趣
@@ -105,7 +109,7 @@ public class UserInfoChange extends AppCompatActivity {
         //获取用户信息并加载
         setUserInfo();
 
-        //转跳到修改密码界面
+        //点击转跳到修改密码界面
         changepwd = (Button) findViewById(R.id.button_change_pwd);
         changepwd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,16 +119,16 @@ public class UserInfoChange extends AppCompatActivity {
             }
         });
 
-        /*confirm = (Button) findViewById(R.id.button_confirm_info_change);
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeInfo(cnick, cemail, cmajar, "暂定");
-            }
-        });*/
     }
 
-    //获取到的用户信息提交服务器
+    /**
+     * 获取到的用户信息提交服务器
+     *
+     * @param cnick  用户名
+     * @param cemail 邮箱
+     * @param cmajar 专业
+     * @param cinter 兴趣
+     */
     private void changeInfo(String cnick, String cemail, String cmajar, String cinter) {
         String address = GlobalFlags.getIpAddress() + "changemessage.jsp";
         String params = "pptelephone=" + GlobalFlags.getUserID() + "&pnick=" + cnick + "&pemail=" + cemail + "&pmajor=" + cmajar + "&pinter=" + cinter + "&icon=" + GlobalFlags.getIconIndex();
@@ -140,11 +144,12 @@ public class UserInfoChange extends AppCompatActivity {
                             JSONObject jsonObject = new JSONObject(response);
                             String result = jsonObject.getString("cha_answer");
                             if (result.equals("1"))
-                                Toast.makeText(UserInfoChange.this, "个人信息修改成功！", Toast.LENGTH_SHORT).show();
+                                ;
+                                //Toast.makeText(UserInfoChange.this, "个人信息修改成功！", Toast.LENGTH_SHORT).show();
                             else if (result.equals("-1"))
                                 Toast.makeText(UserInfoChange.this, "个人信息修改失败！", Toast.LENGTH_SHORT).show();
                         } catch (JSONException e) {
-                            Toast.makeText(UserInfoChange.this, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(UserInfoChange.this, "发生错误，请重试！", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -156,14 +161,16 @@ public class UserInfoChange extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(UserInfoChange.this, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(UserInfoChange.this, "发生错误，请重试！", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
         });
     }
 
-    //获取用户信息并显示
+    /**
+     * 获取用户信息并显示
+     */
     private void setUserInfo() {
         String address = GlobalFlags.getIpAddress() + "person.jsp";
         String params = "pptelephone=" + GlobalFlags.getUserID();
@@ -182,7 +189,7 @@ public class UserInfoChange extends AppCompatActivity {
                             emailview.setText((cemail = jsonObject.getString("pemail")).equals("null") ? (cemail = "") : cemail);
                             majorview.setText((cmajar = jsonObject.getString("major")).equals("null") ? (cmajar = "") : cmajar);
                             cinter = jsonObject.getString("inter");
-                            //interbtn.setText((cinter = jsonObject.getString("inter")).replace("-", " | "));
+                            //interview.setText((cinter = jsonObject.getString("inter")).replace("-", " | "));
                         } catch (JSONException e) {
                             //Toast.makeText(UserInfoChange.this, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
                             Toast.makeText(UserInfoChange.this, "请完善个人信息！", Toast.LENGTH_SHORT).show();
@@ -197,14 +204,19 @@ public class UserInfoChange extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(UserInfoChange.this, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(UserInfoChange.this, "个人信息加载失败！", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
         });
     }
 
-    //单个用户信息修改对话框
+    /**
+     * 单个用户信息修改对话框
+     *
+     * @param title 对话框标题
+     * @param flag  单个信息标识ID
+     */
     private void ChangeDialog(String title, final int flag) {
         alertDialog = new AlertDialog.Builder(UserInfoChange.this, R.style.NoBackGroundDialog).create();
         alertDialog.show();
@@ -314,10 +326,11 @@ public class UserInfoChange extends AppCompatActivity {
         switch (requestCode) {
             case 1:
                 if (resultCode == RESULT_OK) {
+                    //从兴趣选择界面返回的兴趣信息
                     String dataReturn = data.getStringExtra("interests_return");
                     if (!dataReturn.equals(cinter)) {
                         cinter = dataReturn;
-                        //interbtn.setText(cinter.replace("-", " | "));
+                        //interview.setText(cinter.replace("-", " | "));
                         isChanged = true;
                     }
                 }

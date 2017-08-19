@@ -14,7 +14,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.wangcong.picturelabeling.R;
-import com.wangcong.picturelabeling.Utils.ActivityCollector;
 import com.wangcong.picturelabeling.Utils.GlobalFlags;
 import com.wangcong.picturelabeling.Utils.HttpCallbackListener;
 import com.wangcong.picturelabeling.Utils.HttpUtil;
@@ -23,9 +22,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Login extends AppCompatActivity {
-    private EditText text1_username, text2_pwd;
-    private String user_name, pwd;
-    private CheckBox rem_pw, auto_login;
+    private EditText text_username, text_pwd;//用户名、密码输入框
+    private String username, pwd;//保存用户名、密码
+    private CheckBox rem_pw, auto_login;//记住密码、自动登录选择框
     private SharedPreferences sp;
 
     @Override
@@ -33,35 +32,34 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.login);
-        ActivityCollector.activities.add(this);
-
         //Log.d("Login", "onCreate: called");
 
-        text1_username = (EditText) findViewById(R.id.edit_login_account);
-        text2_pwd = (EditText) findViewById(R.id.edit_login_password);
+        text_username = (EditText) findViewById(R.id.edit_login_account);
+        text_pwd = (EditText) findViewById(R.id.edit_login_password);
         sp = this.getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         rem_pw = (CheckBox) findViewById(R.id.memory);
         auto_login = (CheckBox) findViewById(R.id.autologin);
 
-        //判断自动登录多选框状态
+        //判断记住密码选择框状态
         if (sp.getBoolean("ISCHECK", false)) {
+            //如为选择态，填入保存的用户信息
             rem_pw.setChecked(true);
-            text1_username.setText(sp.getString("USER_NAME", ""));
-            text2_pwd.setText(sp.getString("PASSWORD", ""));
-            text1_username.setSelection(text1_username.getText().length());//光标移到文字最后
-            //判断自动登陆多选框状态
-            if (sp.getBoolean("AUTO_ISCHECK", false)) {
-                auto_login.setChecked(true);
+            text_username.setText(sp.getString("USER_NAME", ""));
+            text_pwd.setText(sp.getString("PASSWORD", ""));
+            text_username.setSelection(text_username.getText().length());//光标移到文字最后
 
-                //此处联网判断用户名和密码
-                GlobalFlags.setUserID(sp.getString("USER_NAME", ""));
+            //判断自动登陆选择框状态
+            if (sp.getBoolean("AUTO_ISCHECK", false)) {
+                ////如为选择态，联网判断用户名和密码
+                auto_login.setChecked(true);
+                GlobalFlags.setUserID(sp.getString("USER_NAME", ""));//设置全局变量“用户名”
                 LoginValidation(sp.getString("USER_NAME", ""), sp.getString("PASSWORD", ""));
 
-                /*调试代码
-                GlobalFlags.setUserID(sp.getString("USER_NAME", ""));
-                GlobalFlags.setIsLoggedIn(true);
-                Intent intent = new Intent(Login.this, Main.class);
-                startActivity(intent);*/
+                /*********调试代码
+                 GlobalFlags.setUserID(sp.getString("USER_NAME", ""));
+                 GlobalFlags.setIsLoggedIn(true);
+                 Intent intent = new Intent(Login.this, Main.class);
+                 startActivity(intent);*/
                 //Toast.makeText(Login.this, "请重新输入密码！", Toast.LENGTH_SHORT).show();
             }
         }
@@ -70,10 +68,10 @@ public class Login extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                user_name = text1_username.getText().toString().trim();
-                pwd = text2_pwd.getText().toString().trim();
-                GlobalFlags.setUserID(user_name);
-                if (user_name.isEmpty() || pwd.isEmpty()) {
+                username = text_username.getText().toString().trim();
+                pwd = text_pwd.getText().toString().trim();
+                GlobalFlags.setUserID(username);
+                if (username.isEmpty() || pwd.isEmpty()) {
                     Toast.makeText(Login.this, "密码或账号不能为空！", Toast.LENGTH_SHORT).show();
                     return;
                 } else {
@@ -82,14 +80,14 @@ public class Login extends AppCompatActivity {
                     if (rem_pw.isChecked()) {
                         //记住用户名、密码
                         SharedPreferences.Editor editor = sp.edit();
-                        editor.putString("USER_NAME", user_name);
+                        editor.putString("USER_NAME", username);
                         editor.putString("PASSWORD", pwd);
                         editor.commit();
                     }
                     GlobalFlags.setIsLoggedIn(true);
                     Intent intent = new Intent(Login.this, Main.class);
                     startActivity(intent);*/
-                    LoginValidation(user_name, pwd);
+                    LoginValidation(username, pwd);
                 }
             }
         });
@@ -105,18 +103,19 @@ public class Login extends AppCompatActivity {
         });
 
 
-        //监听记住密码多选框按钮事件
+        //监听记住密码选择框按钮事件
         rem_pw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (rem_pw.isChecked()) {
                     sp.edit().putBoolean("ISCHECK", true).commit();
                 } else {
+                    auto_login.setChecked(false);//记住密码未选择，自动登录不能选
                     sp.edit().putBoolean("ISCHECK", false).commit();
                 }
             }
         });
 
-        //监听自动登录多选框事件
+        //监听自动登录选择框事件
         auto_login.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (rem_pw.isChecked()) {
@@ -125,13 +124,21 @@ public class Login extends AppCompatActivity {
                     } else {
                         sp.edit().putBoolean("AUTO_ISCHECK", false).commit();
                     }
+                } else {
+                    //记住密码未选择，自动登录不能选
+                    auto_login.setChecked(false);
                 }
             }
         });
     }
 
+    /**
+     * 用户名和密码验证
+     *
+     * @param user_name 用户名
+     * @param pwd       密码
+     */
     private void LoginValidation(final String user_name, final String pwd) {
-        //登录逻辑
         String address = GlobalFlags.getIpAddress() + "login.jsp";
         String params = "pptelephone=" + user_name + "&ppassword=" + pwd;
         HttpUtil.sendHttpRequest(address, params, new HttpCallbackListener() {
@@ -154,14 +161,14 @@ public class Login extends AppCompatActivity {
                                     editor.putString("PASSWORD", pwd);
                                     editor.commit();
                                 }
-                                GlobalFlags.setIsLoggedIn(true);
+                                GlobalFlags.setIsLoggedIn(true);//设置全局变量“已经登录”
                                 Intent intent = new Intent(Login.this, Main.class);
                                 startActivity(intent);
                             } else if (result.equals("-1")) {
                                 Toast.makeText(Login.this, "登录失败！", Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
-                            Toast.makeText(Login.this, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Login.this, "发生错误，请重试！", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -173,7 +180,7 @@ public class Login extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(Login.this, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Login.this, "发生错误，请重试！", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -185,15 +192,16 @@ public class Login extends AppCompatActivity {
         switch (requestCode) {
             case 1:
                 if (resultCode == RESULT_OK) {
+                    //获取新注册的用户名和密码，填入登录输入框
                     String name = intent.getStringExtra("username");
                     String password = intent.getStringExtra("password");
                     //Log.d("Login", "onActivityResult: called" + name + " " + password);
                     if (name != null && password != null && name.length() != 0 && password.length() != 0) {
                         rem_pw.setChecked(false);
                         auto_login.setChecked(false);
-                        text1_username.setText(name);
-                        text2_pwd.setText(password);
-                        text1_username.setSelection(text1_username.getText().length());//光标移到文字最后
+                        text_username.setText(name);
+                        text_pwd.setText(password);
+                        text_username.setSelection(text_username.getText().length());//光标移到文字最后
                     }
                 }
                 break;
@@ -210,29 +218,4 @@ public class Login extends AppCompatActivity {
             this.finish();
         }
     }
-
-    /*public void onStart() {
-        super.onStart();
-        Log.d("Login", "onStart: called");
-    }
-    public void onResume() {
-        super.onResume();
-        Log.d("Login", "onResume: called");
-    }
-    public void onPause() {
-        super.onPause();
-        Log.d("Login", "onPause: called");
-    }
-    public void onStop() {
-        super.onStop();
-        Log.d("Login", "onStop: called");
-    }
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d("Login", "onDestroy: called");
-    }
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }*/
 }

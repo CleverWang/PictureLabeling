@@ -10,19 +10,17 @@ import android.view.MenuItem;
 
 import com.wangcong.picturelabeling.Adapters.IconAdapter;
 import com.wangcong.picturelabeling.R;
-import com.wangcong.picturelabeling.Utils.ActivityCollector;
 import com.wangcong.picturelabeling.Utils.GlobalFlags;
 
 import java.util.ArrayList;
 
 public class SelectUserIcon extends AppCompatActivity {
-    private ArrayList<Integer> icons = new ArrayList<>();
+    private ArrayList<Integer> icons = new ArrayList<>();//保存所有头像的ID信息
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.select_user_icon);
-        ActivityCollector.activities.add(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar3);
         toolbar.setTitle("");
@@ -40,6 +38,9 @@ public class SelectUserIcon extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
+    /**
+     * 加载头像ID信息
+     */
     private void initIcons() {
         for (int i = 0; i < GlobalFlags.UserIcons.length; i++) {
             icons.add(GlobalFlags.UserIcons[i]);

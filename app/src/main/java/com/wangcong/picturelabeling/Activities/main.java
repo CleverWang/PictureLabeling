@@ -26,7 +26,6 @@ import com.wangcong.picturelabeling.Fragments.AllPictureFragment;
 import com.wangcong.picturelabeling.Fragments.LabelHistoryFragment;
 import com.wangcong.picturelabeling.Fragments.SystemPushFragment;
 import com.wangcong.picturelabeling.R;
-import com.wangcong.picturelabeling.Utils.ActivityCollector;
 import com.wangcong.picturelabeling.Utils.GlobalFlags;
 import com.wangcong.picturelabeling.Utils.HttpCallbackListener;
 import com.wangcong.picturelabeling.Utils.HttpUtil;
@@ -39,22 +38,23 @@ import java.util.ArrayList;
 import static com.wangcong.picturelabeling.R.drawable.staroff;
 
 public class Main extends AppCompatActivity {
-    public int all_id = 1, sys_id = 2, his_id = 3;
-    public int now_id = 0;
+    public final int all_id = 1, sys_id = 2, his_id = 3;//标识所有图片、今日推送、历史记录fragment的ID
+    public int now_id = 0;//当前fragment的ID
     private DrawerLayout mDrawerLayout;
     private NavigationView navView;
-    private ImageView userIcon;
-    public ArrayList<OneFragment> allFragments = new ArrayList<>();
-    private TextView score;
-    //private RatingBar ratingBar;
-    private LinearLayout rating;
+    private ImageView userIcon;//用户头像
+    public ArrayList<OneFragment> allFragments = new ArrayList<>();//保存3个fragment
+    private TextView score;//积分
+    private LinearLayout rating;//任务进度
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
+                //当前点击的是所有图片fragment
                 case R.id.all_picture:
+                    //如果显示的不是当前fragment，切换fragment
                     if (now_id != all_id) {
                         AllPictureFragment fragment1 = (AllPictureFragment) contain(all_id);
                         if (fragment1 == null) {
@@ -65,6 +65,7 @@ public class Main extends AppCompatActivity {
                         now_id = all_id;
                     }
                     return true;
+                //当前点击的是今日推送fragment
                 case R.id.system_push:
                     if (now_id != sys_id) {
                         SystemPushFragment fragment2 = (SystemPushFragment) contain(sys_id);
@@ -76,6 +77,7 @@ public class Main extends AppCompatActivity {
                         now_id = sys_id;
                     }
                     return true;
+                //当前点击的是历史记录fragment
                 case R.id.history_picture:
                     if (now_id != his_id) {
                         LabelHistoryFragment fragment3 = (LabelHistoryFragment) contain(his_id);
@@ -87,17 +89,6 @@ public class Main extends AppCompatActivity {
                         now_id = his_id;
                     }
                     return true;
-                /*case R.id.user_center:
-                    if (now_id != user_id) {
-                        UserCenterFragment fragment4 = (UserCenterFragment) contain(user_id);
-                        if (fragment4 == null) {
-                            fragment4 = new UserCenterFragment();
-                            allFragments.add(new OneFragment(fragment4, user_id));
-                        }
-                        changeFragment(fragment4, user_id);
-                        now_id = user_id;
-                    }
-                    return true;*/
             }
             return false;
         }
@@ -113,6 +104,7 @@ public class Main extends AppCompatActivity {
     public void changeFragment(Fragment fragment, int toId) {
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
+        //设置切换动画
         if (now_id < toId)
             transaction.setCustomAnimations(R.animator.fragment_slide_left_enter, R.animator.fragment_slide_left_exit);
         else
@@ -125,8 +117,6 @@ public class Main extends AppCompatActivity {
             //要显示的fragment已在activity中，则隐藏当前fragment，并显示要显示的fragment
             transaction.hide(nowFragment).show(fragment);
         }
-        //transaction.replace(R.id.content, fragment);
-        //transaction.addToBackStack(null);
         //Log.d("Main", "changeFragment: " + transaction.commit());
         transaction.commit();
     }
@@ -150,7 +140,6 @@ public class Main extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ActivityCollector.activities.add(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
@@ -161,7 +150,7 @@ public class Main extends AppCompatActivity {
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
         }
 
-        //初始的fragment为“所有图片”fragment
+        //初始的fragment为所有图片fragment
         AllPictureFragment fragment = new AllPictureFragment();
         allFragments.add(new OneFragment(fragment, all_id));
         getFragmentManager().beginTransaction().replace(R.id.content, fragment).commit();
@@ -175,28 +164,29 @@ public class Main extends AppCompatActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navView = (NavigationView) findViewById(R.id.nav_view);
 
-        //获取headerView
+        //获取滑动菜单栏上的headerView
         View headerView = navView.getHeaderView(0);
         TextView user = (TextView) headerView.findViewById(R.id.text_user_name_nav);
-        user.setText(GlobalFlags.getUserID());
+        user.setText(GlobalFlags.getUserID());//设置用户名
         score = (TextView) headerView.findViewById(R.id.text_scores_nav);
-        //ratingBar = (RatingBar) headerView.findViewById(R.id.star_progress_nav);
-        //ratingBar.setIsIndicator(true);
         rating = (LinearLayout) headerView.findViewById(R.id.linearlayout_rating);
         userIcon = (ImageView) headerView.findViewById(R.id.user_icon);
-        setHeadView();
+        setHeadView();//设置头像、积分、任务进度
 
         navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
                 switch (item.getItemId()) {
+                    //转跳主界面
                     case R.id.nav_home:
                         mDrawerLayout.closeDrawer(GravityCompat.START);
                         break;
+                    //转跳修改用户信息界面
                     case R.id.nav_change:
                         Intent intent = new Intent(Main.this, UserInfoChange.class);
                         startActivity(intent);
                         break;
+                    //退出登录
                     case R.id.nav_exit:
                         Intent intent1 = new Intent(Main.this, Login.class);
                         GlobalFlags.setIsLoggedIn(false);
@@ -230,7 +220,6 @@ public class Main extends AppCompatActivity {
                             int scor = jsonObject.getInt("pnum");
                             score.setText("积分：" + scor + "分");
                             renwu = jsonObject.getString("prenwu");
-                            //ratingBar.setRating(Integer.parseInt(renwu));
                             ratingStars(Integer.parseInt(renwu));
                             icon = jsonObject.getInt("icon");
                             Glide.with(getApplication()).load(GlobalFlags.UserIcons[icon]).into(userIcon);
@@ -256,7 +245,7 @@ public class Main extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(Main.this, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Main.this, "个人信息加载失败！", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -305,19 +294,9 @@ public class Main extends AppCompatActivity {
         setHeadView();
         //判断是否要刷新fragment
         if (GlobalFlags.isNeedtoRefresh()) {
-            /*Fragment tfrag = contain(now_id);
-            if (tfrag != null) {
-                if (now_id == all_id) {
-                    if (!((AllPictureFragment) tfrag).isSearched())//刷新所有图片界面
-                        ((AllPictureFragment) tfrag).getAllPicPaths();
-                    else
-                        ((AllPictureFragment) tfrag).searchPics();//是搜索后再打标签返回的，刷新搜索界面
-                } else if (now_id == sys_id)
-                    ((SystemPushFragment) tfrag).getAllPicPaths();
-            }*/
             Fragment tfrag = contain(all_id);
             if (tfrag != null) {
-                if (!((AllPictureFragment) tfrag).isSearched())//刷新所有图片界面
+                if (!((AllPictureFragment) tfrag).isSearched())//刷新所有图片fragment
                     ((AllPictureFragment) tfrag).getAllPicPaths();
                 else
                     ((AllPictureFragment) tfrag).searchPics();//是搜索后再打标签返回的，刷新搜索界面

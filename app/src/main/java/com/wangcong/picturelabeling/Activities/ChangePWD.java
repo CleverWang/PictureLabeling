@@ -3,7 +3,6 @@ package com.wangcong.picturelabeling.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -11,7 +10,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.wangcong.picturelabeling.R;
-import com.wangcong.picturelabeling.Utils.ActivityCollector;
 import com.wangcong.picturelabeling.Utils.GlobalFlags;
 import com.wangcong.picturelabeling.Utils.HttpCallbackListener;
 import com.wangcong.picturelabeling.Utils.HttpUtil;
@@ -24,36 +22,40 @@ import org.json.JSONObject;
  */
 
 public class ChangePWD extends AppCompatActivity {
-    private EditText text1, text2, text3;
+    private EditText old_pwd, new_pwd, new_confirm;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.change_pwd);
-        ActivityCollector.activities.add(this);
 
-        text1 = (EditText) findViewById(R.id.edit_old_pwd);
-        text2 = (EditText) findViewById(R.id.edit_new_pwd);
-        text3 = (EditText) findViewById(R.id.edit_new_pwd_confirm);
+        old_pwd = (EditText) findViewById(R.id.edit_old_pwd);
+        new_pwd = (EditText) findViewById(R.id.edit_new_pwd);
+        new_confirm = (EditText) findViewById(R.id.edit_new_pwd_confirm);
         Button button = (Button) findViewById(R.id.button_confirm_pwd_change);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String oldpwd = text1.getText().toString();
-                String newpwd = text2.getText().toString();
-                String newconfirm = text3.getText().toString();
+                String oldpwd = old_pwd.getText().toString();
+                String newpwd = new_pwd.getText().toString();
+                String newconfirm = new_confirm.getText().toString();
                 if (oldpwd.length() == 0 || newconfirm.length() == 0 || newpwd.length() == 0) {
                     Toast.makeText(ChangePWD.this, "请输入密码！", Toast.LENGTH_SHORT).show();
                 } else if (!newpwd.equals(newconfirm)) {
                     Toast.makeText(ChangePWD.this, "新密码两次输入不匹配！", Toast.LENGTH_SHORT).show();
                 } else {
-                    //此处编写修改密码联网代码
                     changePwd(oldpwd, newpwd);
                 }
             }
         });
     }
 
+    /**
+     * 修改密码
+     *
+     * @param oldpwd 旧密码
+     * @param newpwd 新密码
+     */
     private void changePwd(String oldpwd, String newpwd) {
         String address = GlobalFlags.getIpAddress() + "passwordchange.jsp";
         String params = "pptelephone=" + GlobalFlags.getUserID() + "&oldpassword=" + oldpwd + "&newpassword=" + newpwd;
@@ -64,19 +66,19 @@ public class ChangePWD extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Log.d("changepwd", "message: " + response);
+                        //Log.d("changepwd", "message: " + response);
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             int result = jsonObject.getInt("result");
                             if (result == 1) {
                                 Toast.makeText(ChangePWD.this, "密码修改成功，请重新登录！", Toast.LENGTH_SHORT).show();
-                                GlobalFlags.setIsLoggedIn(false);
+                                GlobalFlags.setIsLoggedIn(false);//设置全局变量“已经登录”为false
                                 Intent intent = new Intent(ChangePWD.this, Login.class);
                                 startActivity(intent);
                             } else if (result == -1)
                                 Toast.makeText(ChangePWD.this, "密码修改失败！", Toast.LENGTH_SHORT).show();
                         } catch (JSONException e) {
-                            Toast.makeText(ChangePWD.this, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ChangePWD.this, "发生错误，请重试！", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -88,7 +90,7 @@ public class ChangePWD extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(ChangePWD.this, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ChangePWD.this, "发生错误，请重试！", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
