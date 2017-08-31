@@ -1,6 +1,7 @@
 package com.wangcong.picturelabeling.Fragments;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,10 +12,13 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.wangcong.picturelabeling.Adapters.NewImageAdapterHistory;
 import com.wangcong.picturelabeling.Beans.OnePicHistory;
@@ -38,9 +42,11 @@ public class LabelHistoryFragment extends Fragment {
     private ArrayList<OnePicHistory> allHisPicsJudged = new ArrayList<OnePicHistory>();//保存已上传已被系统判定的
     private NewImageAdapterHistory adapter;
     private TextView loadInfo;
-    private LinearLayout linearLayout_info;
+    private LinearLayout linearLayout_info, linearlayout_search;
     private ImageView smile, cry;
     private SwipeRefreshLayout swipeRefresh;
+    private EditText searchText;
+    private String searchContent = "";//搜索关键字
     private Button noJudged, judged;//未判定，已判定按钮
     private final int LOAD_OK = 1;
     private final int LOAD_FAILED = 2;
@@ -91,9 +97,6 @@ public class LabelHistoryFragment extends Fragment {
 
         getAllPicPaths();
 
-        //隐藏“所有图片”中的搜索界面
-        LinearLayout search = (LinearLayout) view.findViewById(R.id.linearlayout_search_in_all_pic);
-        search.setVisibility(View.GONE);
         loadInfo = (TextView) view.findViewById(R.id.textview_load_information);
         linearLayout_info = (LinearLayout) view.findViewById(R.id.linearlayout_load_info);
         smile = (ImageView) view.findViewById(R.id.image_smile);
@@ -105,6 +108,7 @@ public class LabelHistoryFragment extends Fragment {
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                searchText.setText("");
                 getAllPicPaths();
             }
         });
@@ -114,6 +118,29 @@ public class LabelHistoryFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         adapter = new NewImageAdapterHistory(getActivity(), allHisPics);
         recyclerView.setAdapter(adapter);
+        /*linearlayout_search = (LinearLayout) view.findViewById(R.id.linearlayout_search_in_all_pic);
+        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0)
+                    linearlayout_search.setBackgroundColor(Color.parseColor("#262930"));
+                else
+                    linearlayout_search.setBackgroundColor(Color.parseColor("#efeff0"));
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });*/
+
+        searchText = (EditText) view.findViewById(R.id.edit_search_in_all_pic);
+        ImageView searchBtn = (ImageView) view.findViewById(R.id.button_search_in_all_pic);
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchContent = searchText.getText().toString().trim();
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(searchText.getWindowToken(), 0);//隐藏软键盘
+                searchPics();
+            }
+        });
 
         noJudged = (Button) view.findViewById(R.id.button_no_judge);
         noJudged.setTextColor(Color.parseColor("#ffffff"));//设置初始是“未判定”被选中
@@ -122,6 +149,7 @@ public class LabelHistoryFragment extends Fragment {
         noJudged.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                searchText.setText("");
                 isNoJudgedView = true;
                 //未判定按钮选中
                 noJudged.setTextColor(Color.parseColor("#ffffff"));
@@ -139,6 +167,7 @@ public class LabelHistoryFragment extends Fragment {
         judged.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                searchText.setText("");
                 isNoJudgedView = false;
                 //已判定按钮选中
                 judged.setTextColor(Color.parseColor("#ffffff"));
@@ -154,6 +183,35 @@ public class LabelHistoryFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    /**
+     * 按搜索关键字对标签进行搜索
+     */
+    public void searchPics() {
+        //Log.d("His", "searchPics: executed! "+searchContent);
+        ArrayList<OnePicHistory> searchResult = new ArrayList<>();
+        if (isNoJudgedView) {
+            for (OnePicHistory item : allHisPicsNoJudged) {
+                if (item.getLabel().contains(searchContent))
+                    searchResult.add(item);
+            }
+        } else {
+            for (OnePicHistory item : allHisPicsJudged) {
+                if (item.getLabel().contains(searchContent))
+                    searchResult.add(item);
+            }
+        }
+        if (searchResult.size() == 0) {
+            Toast.makeText(getActivity(), "未找到图片！", Toast.LENGTH_SHORT).show();
+        } else {
+            //Log.d("His", "searchPics: changed! ");
+            allHisPics.clear();
+            for (OnePicHistory item : searchResult) {
+                allHisPics.add(item);
+            }
+        }
+        adapter.notifyDataSetChanged();
     }
 
     /**

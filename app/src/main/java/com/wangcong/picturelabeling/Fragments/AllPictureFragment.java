@@ -41,7 +41,7 @@ public class AllPictureFragment extends Fragment {
     private SwipeRefreshLayout swipeRefresh;//下拉刷新
     private EditText searchText;
     private TextView loadInfo;
-    private LinearLayout linearLayout_info;
+    private LinearLayout linearLayout_info, linearlayout_search;
     private ImageView smile, cry;
     private String searchContent = "";//搜索关键字
     private final int LOAD_OK = 1;//加载成功消息
@@ -141,6 +141,17 @@ public class AllPictureFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         adapter = new NewImageAdapter(getActivity(), allPics);
         recyclerView.setAdapter(adapter);
+        /*linearlayout_search = (LinearLayout) view.findViewById(R.id.linearlayout_search_in_all_pic);
+        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0)
+                    linearlayout_search.setBackgroundColor(Color.parseColor("#262930"));
+                else
+                    linearlayout_search.setBackgroundColor(Color.parseColor("#efeff0"));
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });*/
         //Log.d(TAG, "onCreateView");
         return view;
     }
