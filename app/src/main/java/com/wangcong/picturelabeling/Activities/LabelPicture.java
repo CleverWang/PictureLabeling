@@ -132,8 +132,24 @@ public class LabelPicture extends AppCompatActivity {
         quit = (Button) view.findViewById(R.id.lable_cancel);
         quit.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
+            public void onClick(View v) {//缓存已经输入的标签
+                //获取输入的标签
+                String[] temp = new String[6];
+                for (int m = 0; m < 6; m++)
+                    temp[m] = edit_labels[m].getText().toString().trim();
+                //缓存输入的标签
+                newLabels.clear();
+                for (int i = 0; i < 6; i++) {
+                    if (temp[i] != null && temp[i].length() > 0) {
+                        newLabels.add(temp[i]);
+                    }
+                }
+                //将缓存的标签替换掉旧标签用于填充到EditText中
+                PicLabels.clear();
+                for (String item : newLabels) {
+                    PicLabels.add(item);
+                }
+                alertDialog.dismiss();//关闭打标签界面
                 //rec_click_count = 0;
             }
         });
@@ -187,7 +203,7 @@ public class LabelPicture extends AppCompatActivity {
         edit_labels[3] = (EditText) view.findViewById(R.id.edit_label4);
         edit_labels[4] = (EditText) view.findViewById(R.id.edit_label5);
         edit_labels[5] = (EditText) view.findViewById(R.id.edit_label6);
-        //加载解析好的标签到EditText中
+        //加载标签到EditText中
         if (PicLabels.size() > 0) {
             int index = 0;
             for (String item : PicLabels)
