@@ -9,10 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.wangcong.picturelabeling.Activities.LabelPicture;
+import com.wangcong.picturelabeling.Activities.ViewJudgedPic;
 import com.wangcong.picturelabeling.Beans.OnePicHistory;
 import com.wangcong.picturelabeling.R;
 
@@ -65,7 +65,12 @@ public class NewImageAdapterHistory extends RecyclerView.Adapter<NewImageAdapter
                     intent.putExtra("Recommends", one.getRecommends());
                     context.startActivity(intent);
                 } else//已判定
-                    Toast.makeText(context, "该图片标签已判定完毕！", Toast.LENGTH_SHORT).show();
+                {
+                    //Toast.makeText(context, "该图片标签已判定完毕！", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(context, ViewJudgedPic.class);
+                    intent.putExtra("PicPath", one.getPath());
+                    context.startActivity(intent);
+                }
             }
         });
         return holder;
