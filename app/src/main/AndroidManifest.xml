@@ -26,28 +26,32 @@
         <activity
             android:name=".Activities.Main"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustPan"></activity>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".Activities.Register"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".Activities.UserInfoChange"
-            android:launchMode="singleTask"></activity>
+            android:launchMode="singleTask" />
         <activity
             android:name=".Activities.ChangePWD"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".Activities.LabelPicture"
             android:launchMode="singleTask"
-            android:theme="@style/PicActivityTheme"></activity>
+            android:theme="@style/PicActivityTheme" />
         <activity
             android:name=".Activities.SelectInterests"
-            android:launchMode="singleTask"></activity>
+            android:launchMode="singleTask" />
         <activity
             android:name=".Activities.SelectUserIcon"
-            android:launchMode="singleTask"></activity>
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".Activities.ViewJudgedPic"
+            android:launchMode="singleTask"
+            android:theme="@style/PicActivityTheme"></activity>
     </application>
 
 </manifest>
